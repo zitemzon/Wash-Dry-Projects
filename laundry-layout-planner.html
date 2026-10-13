@@ -333,7 +333,6 @@ button,input,select,textarea{font:inherit;color:inherit}
    ========================================================= */
 const KEY='washdry-layout-v1';          // แบบที่กำลังแก้ไข (working copy)
 const PKEY='washdry-projects-v1';       // โปรเจคที่บันทึกในเบราว์เซอร์
-const CKEY='washdry-current-v1';        // โปรเจคที่เปิดอยู่
 const AKEY='washdry-autosave';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -347,8 +346,8 @@ const lsSet=(k,v)=>{ try{ localStorage.setItem(k,v); return true; }catch(e){ ret
 /* ---------- หน่วย ---------- */
 // ระยะ/ขนาด: ≥ 1 cm → cm (ทศนิยมสูงสุด 1 ตำแหน่ง), < 1 cm → mm
 function fmtLen(mm,unit){
-  const u=unit!==false, a=Math.abs(+mm||0), sg=(+mm<0&&a>=.5)?'-':'';
-  if(a<10) return sg+Math.round(a)+(u?' mm':'');
+  const u=unit!==false, a=Math.abs(+mm||0), r=Math.round(a), sg=(+mm<0&&r>=1)?'-':'';
+  if(r<10) return sg+r+(u?' mm':'');
   return sg+(a/10).toLocaleString('en-US',{maximumFractionDigits:1})+(u?' cm':'');
 }
 // ขนาดคู่ เช่น 68.6×87.5 — ถ้ามีค่าใดต่ำกว่า 1 cm ใส่หน่วยทุกค่า
@@ -506,8 +505,9 @@ function normalize(o){
   return o;
 }
 function load(){
-  try{ const raw=lsGet(KEY); if(raw){ const o=JSON.parse(raw); if(valid(o)) return {state:normalize(o),fresh:false}; } }catch(e){}
-  return {state:sample(),fresh:true};
+  try{ const raw=lsGet(KEY); if(raw){ const o=JSON.parse(raw); const wc=o&&typeof o==='object'?o._wc:null; if(o&&typeof o==='object') delete o._wc;
+    if(valid(o)) return {state:normalize(o),fresh:false,wc:(wc&&typeof wc==='object')?wc:null}; } }catch(e){}
+  return {state:sample(),fresh:true,wc:null};
 }
 
 /* ---------- history ---------- */
@@ -520,7 +520,7 @@ function redo(){ if(!redoStack.length) return; hist.push(snapStr()); S=JSON.pars
 function afterLoad(){ if(sel&&!findAny(sel)) sel=null; syncHeader(); commit(); }
 
 /* working copy → localStorage, แล้วอัปเดตสถานะการบันทึกโปรเจค */
-function save(){ lsSet(KEY,JSON.stringify(S)); onContentChanged(); }
+function save(){ writeWC(); onContentChanged(); }
 
 /* =========================================================
    3) Analysis — ชน / ล้นขอบ / พื้นที่หน้าเครื่องถูกบัง
@@ -752,7 +752,7 @@ function renderPlan(){
   const cw=svg.clientWidth, ch=svg.clientHeight;
   svg.innerHTML=buildPlan(view,{})+scaleBar(cw,ch);
   const mmpx=1/view.s;
-  $('#stScale').textContent=`1 px = ${mmpx>=10?(mmpx/10).toFixed(2)+' cm':mmpx.toFixed(1)+' mm'}`;
+  $('#stScale').textContent=`1 px = ${mmpx>=9.95?(mmpx/10).toFixed(2)+' cm':mmpx.toFixed(1)+' mm'}`;
 }
 
 /* =========================================================
@@ -774,11 +774,11 @@ function renderLibrary(){
     <label class="full">ประเภท<select id="cKind">${KORDER.filter(k=>k!=='cctv').map(k=>`<option value="${k}">${KIND[k].label}</option>`).join('')}</select></label>
     <label>ยี่ห้อ<input id="cBrand" value="Speed Queen"></label>
     <label>รุ่น<input id="cModel" value=""></label>
-    <label>กว้าง W (cm)<input id="cW" type="number" min="1" step="any" value="70"></label>
-    <label>ลึก D (cm)<input id="cD" type="number" min="1" step="any" value="80"></label>
-    <label>สูง H (cm)<input id="cH" type="number" min="0" step="any" value="100"></label>
+    <label>กว้าง W (cm)<input id="cW" type="number" min="1" step="any" value="70"><span class="hint" id="cWHint"></span></label>
+    <label>ลึก D (cm)<input id="cD" type="number" min="1" step="any" value="80"><span class="hint" id="cDHint"></span></label>
+    <label>สูง H (cm)<input id="cH" type="number" min="0" step="any" value="100"><span class="hint" id="cHHint"></span></label>
     <label>จำนวนถัง/ช่อง<input id="cU" type="number" min="1" value="1"></label>
-    <label class="full">พื้นที่ว่างหน้าเครื่อง (cm)<input id="cC" type="number" min="0" step="any" value="90"></label>
+    <label class="full">พื้นที่ว่างหน้าเครื่อง (cm)<input id="cC" type="number" min="0" step="any" value="90"><span class="hint" id="cCHint"></span></label>
     <button type="button" class="btn full" id="cAdd">+ เพิ่มลงแบบ</button>
   </div><p class="note">ใส่ค่าเป็น cm ได้ทศนิยม 1 ตำแหน่ง (0.1 cm = 1 mm) · ใช้จำนวน / ระยะห่าง / ทิศหน้าเครื่อง จากแถบด้านบนของคลัง</p></div></details>`;
   h+=`<details class="sec" open><summary>พื้นที่ภายในร้าน (โซน)</summary><div class="sec-b"><div class="form">
@@ -896,7 +896,7 @@ function onField(e){
   const t=e.target, f=t.dataset.f; if(!f) return; const o=sel?findAny(sel):null; if(!o) return;
   if(t.type==='number'){
     let v=parseFloat(t.value); if(!isFinite(v)) return; v*=(+t.dataset.scale||1);
-    if(f==='w'||f==='d'||f==='l') v=Math.max(10,v);
+    if(f==='w'||f==='d'||f==='l') v=Math.max(isZone(o)?100:10,v);
     if(f==='h'||f==='clear'||f==='mountH') v=Math.max(0,v);
     if(f==='units') v=Math.max(1,v);
     if(f==='fov') v=clamp(v,5,360);
@@ -1136,19 +1136,20 @@ function setMode(m){
 document.addEventListener('keydown',e=>{
   const tag=(e.target.tagName||'').toLowerCase(), typing=tag==='input'||tag==='textarea'||tag==='select';
   const mod=e.ctrlKey||e.metaKey;
-  if(mod&&e.key.toLowerCase()==='s'){ e.preventDefault(); if(typing&&e.target.id==='planName') commitName(); saveProject({}); return; }
+  const k=/^[a-z]$/i.test(e.key)?e.key.toLowerCase():(/^Key[A-Z]$/.test(e.code||'')?e.code.slice(3).toLowerCase():String(e.key).toLowerCase());
+  if(mod&&k==='s'){ e.preventDefault(); if(typing&&e.target.id==='planName') commitName(); saveProject({}); return; }
   if(!$('#modal').hidden){ if(e.key==='Escape') closeModal(); return; }
   if(e.key==='Escape'){ if(typing){ e.target.blur(); return; } if(mode==='measure') setMode('select'); else if(sel){ sel=null; renderAll(); } return; }
   if(typing) return;
-  if(mod&&e.key.toLowerCase()==='z'){ e.preventDefault(); e.shiftKey?redo():undo(); return; }
-  if(mod&&e.key.toLowerCase()==='y'){ e.preventDefault(); redo(); return; }
-  if(mod&&e.key.toLowerCase()==='d'){ e.preventDefault(); dupSel(); return; }
+  if(mod&&k==='z'){ e.preventDefault(); e.shiftKey?redo():undo(); return; }
+  if(mod&&k==='y'){ e.preventDefault(); redo(); return; }
+  if(mod&&k==='d'){ e.preventDefault(); dupSel(); return; }
   if(mod) return;
   if(e.key==='Delete'||e.key==='Backspace'){ e.preventDefault(); delSel(); return; }
-  if(e.key==='r'||e.key==='R'){ rotSel(); return; }
-  if(e.key==='m'||e.key==='M'){ setMode(mode==='measure'?'select':'measure'); return; }
-  if(e.key==='v'||e.key==='V'){ setMode('select'); return; }
-  if(e.key==='f'||e.key==='F'){ fit(); return; }
+  if(k==='r'){ rotSel(); return; }
+  if(k==='m'){ setMode(mode==='measure'?'select':'measure'); return; }
+  if(k==='v'){ setMode('select'); return; }
+  if(k==='f'){ fit(); return; }
   const st=(S.snap>1?S.snap:10)*(e.shiftKey?10:1);
   const mv={ArrowLeft:[-st,0],ArrowRight:[st,0],ArrowUp:[0,-st],ArrowDown:[0,st]}[e.key];
   if(mv&&sel){ e.preventDefault(); nudge(mv[0],mv[1]); }
@@ -1166,24 +1167,31 @@ function toast(t,ms){ const el=$('#toast'); el.textContent=t; el.hidden=false; c
 
 /* =========================================================
    13) Project storage
-   - คลาวด์ (db capability): projects/{id} = ข้อมูลสรุป, projectData/{id} = แบบเต็ม
+   - คลาวด์ (db capability): projects/{id} = ข้อมูลสรุป (มี rev, hash), projectData/{id} = แบบเต็ม
      ทุกคนที่เปิดหน้านี้ได้เห็นรายการเดียวกัน, Contributor ขึ้นไปบันทึกได้
    - เบราว์เซอร์ (localStorage): ใช้เมื่อคลาวด์ไม่พร้อม/ไม่มีสิทธิ์เขียน
+   - working copy (KEY) เก็บแบบ + ตัวชี้โปรเจคที่เปิดอยู่ (_wc) ไว้ในค่าเดียวกันเสมอ
+   - การเขียนทุกชนิด (บันทึก/เปลี่ยนชื่อ/ทำสำเนา/ย้าย/ลบ) ผ่าน withLock ทีละรายการ
    ========================================================= */
-const Cloud={db:null,user:null,myId:null,canWrite:null,writeDenied:false,metas:[],fromCache:true,unsub:null};
+const Cloud={db:null,user:null,myId:null,canWrite:null,writeDenied:false,metas:[],fromCache:true,synced:false,seen:new Set(),unsub:null};
 let tier='pending';                 // 'pending' | 'cloud' | 'local'
-let cur={id:null,storage:null,rev:null,savedHash:null,savedAt:null,baseHash:null};
+let cloudReady=null;
+const NOCUR={id:null,storage:null,rev:null,savedHash:null,savedAt:null,baseHash:null};
+let cur=Object.assign({},NOCUR);
 let remoteMeta=null, remoteDeleted=false, saveErr=null, savingNow=false;
 const myRevs=new Set();
 let autoOn=lsGet(AKEY)!=='0';
+let planGen=0;
 
 function content(st){ st=st||S; return {name:st.name,shopW:st.shopW,shopL:st.shopL,grid:st.grid,snap:st.snap,zones:st.zones,items:st.items}; }
 function hashStr(s){ let h=5381; for(let i=0;i<s.length;i++) h=((h<<5)+h+s.charCodeAt(i))|0; return (h>>>0).toString(36)+':'+s.length; }
 const contentHash=()=>hashStr(JSON.stringify(content()));
 function dirty(){ const h=contentHash(); return cur.id?h!==cur.savedHash:h!==cur.baseHash; }
-function persistCur(){ lsSet(CKEY,JSON.stringify(cur)); }
+function writeWC(){ return lsSet(KEY,JSON.stringify(Object.assign({},S,{_wc:cur}))); }
+function persistCur(){ writeWC(); }
 const cloudWritable=()=>!!Cloud.db&&Cloud.canWrite!==false&&!Cloud.writeDenied;
 const defaultStorage=()=>cloudWritable()?'cloud':'local';
+const newPid=()=>'p'+uid()+uid().slice(0,4);
 
 const Local={
   read(){ try{ const o=JSON.parse(lsGet(PKEY)||'{}'); return o&&typeof o==='object'?o:{}; }catch(e){ return {}; } },
@@ -1196,9 +1204,20 @@ function listOf(st){
 function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
 async function retry1(fn){ try{ return await fn(); }catch(e){ if(e&&e.code==='unavailable'){ await sleep(500+Math.random()*700); return await fn(); } throw e; } }
 
+/* ---------- single-writer lock ---------- */
+let lock=Promise.resolve(), lockBusy=0;
+function withLock(fn){
+  lockBusy++;
+  const run=lock.then(()=>fn()).finally(()=>{ lockBusy--; if(!lockBusy) setTimeout(afterLock,0); });
+  lock=run.catch(()=>{});
+  return run;
+}
+
+function afterLock(){ if(lockBusy) return; onCloudList(); if(saveQueued){ saveQueued=false; if(cur.id&&dirty()) saveProject({silent:true,auto:true}); } }
+
 async function storePut(st,id,meta,state){
   if(st==='cloud'){
-    await retry1(()=>Cloud.db.doc('projectData/'+id).set({v:1,state}));
+    await retry1(()=>Cloud.db.doc('projectData/'+id).set({v:1,rev:meta.rev,state}));
     await retry1(()=>Cloud.db.doc('projects/'+id).set(meta));
   }else{
     const o=Local.read(); o[id]={meta,state};
@@ -1208,37 +1227,44 @@ async function storePut(st,id,meta,state){
 async function storeGet(st,id){
   if(st==='cloud'){
     const snap=await retry1(()=>Cloud.db.doc('projectData/'+id).get());
-    if(!snap.exists) return null; const d=snap.data(); return d&&d.state?clone(d.state):null;
+    if(!snap.exists) return null; const d=snap.data();
+    return d&&d.state?{state:clone(d.state),rev:d.rev||null}:null;
   }
-  const v=Local.read()[id]; return v&&v.state?clone(v.state):null;
+  const v=Local.read()[id]; return v&&v.state?{state:clone(v.state),rev:(v.meta&&v.meta.rev)||null}:null;
 }
 async function storeDel(st,id){
   if(st==='cloud'){
     await retry1(()=>Cloud.db.doc('projects/'+id).delete());
     await retry1(()=>Cloud.db.doc('projectData/'+id).delete());
-  }else{ const o=Local.read(); delete o[id]; Local.write(o); }
+  }else{ const o=Local.read(); delete o[id]; if(!Local.write(o)) throw {code:'local_full'}; }
 }
 async function storeRename(st,id,name){
   const rev=uid(); myRevs.add(rev);
   if(st==='cloud'){
-    await retry1(()=>Cloud.db.doc('projectData/'+id).update({state:{name}}));
-    await retry1(()=>Cloud.db.doc('projects/'+id).update({name,rev}));
-  }else{ const o=Local.read(); if(o[id]){ o[id].meta.name=name; o[id].meta.rev=rev; if(o[id].state) o[id].state.name=name; Local.write(o); } }
+    await retry1(()=>Cloud.db.doc('projectData/'+id).update({rev,state:{name}}));
+    await retry1(()=>Cloud.db.doc('projects/'+id).update({name,rev,hash:null}));
+  }else{
+    const o=Local.read(); if(!o[id]) throw {code:'missing'};
+    o[id].meta.name=name; o[id].meta.rev=rev; o[id].meta.hash=null; if(o[id].state) o[id].state.name=name;
+    if(!Local.write(o)) throw {code:'local_full'};
+  }
   return rev;
 }
-function makeMeta(st,state,prev,rev){
+function makeMeta(state,prev,rev,hash){
   const {c,pockets}=countsOf(state), now=new Date().toISOString();
   return {v:1,name:state.name||'ไม่มีชื่อ',shopW:state.shopW,shopL:state.shopL,counts:c,pockets,zones:state.zones.length,objects:state.items.length,
-    updatedAt:now,updatedBy:Cloud.myId||null,createdAt:(prev&&prev.createdAt)||now,createdBy:prev?(prev.createdBy??null):(Cloud.myId||null),rev};
+    updatedAt:now,updatedBy:Cloud.myId||null,createdAt:(prev&&prev.createdAt)||now,createdBy:prev?(prev.createdBy??null):(Cloud.myId||null),rev,hash:hash||null};
 }
 
 function errText(e){
   const c=e&&e.code;
+  if(c==='cloud_unavailable') return 'เชื่อมต่อที่เก็บคลาวด์ไม่ได้ในหน้านี้ — กดบันทึกเพื่อเก็บไว้ในเบราว์เซอร์นี้';
   if(c==='invalid_argument') return 'ไม่มีสิทธิ์บันทึกโปรเจคบนคลาวด์ของหน้านี้ (ต้องเป็น Contributor ขึ้นไป)';
   if(c==='quota_exceeded') return 'พื้นที่จัดเก็บโปรเจคเต็ม ลบโปรเจคที่ไม่ใช้แล้วลองใหม่';
   if(c==='too_big') return 'โปรเจคนี้ใหญ่เกิน 240 KB บันทึกบนคลาวด์ไม่ได้ ลดจำนวนวัตถุหรือส่งออกเป็นไฟล์แทน';
   if(c==='local_full') return 'พื้นที่เก็บในเบราว์เซอร์เต็ม ลบโปรเจคเก่าหรือส่งออกเป็นไฟล์';
   if(c==='resource_exhausted') return 'บันทึกถี่เกินไป รอสักครู่แล้วลองใหม่';
+  if(c==='missing') return 'ไม่พบข้อมูลแบบของโปรเจคนี้';
   return 'บันทึกไม่สำเร็จ ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง';
 }
 function cloudLost(e){
@@ -1248,42 +1274,78 @@ function cloudLost(e){
   }
   return false;
 }
+function markDeletedRemotely(){
+  remoteDeleted=true; remoteMeta=null; clearTimeout(autoT);
+  cur=Object.assign({},NOCUR); persistCur(); showBanner('deleted'); updateStatus();
+}
 
-let saving=null, saveQueued=false;
+/* ---------- save ---------- */
+let saveQueued=false;
+// คืนค่า true เมื่อบันทึกสำเร็จ (หรือไม่มีอะไรต้องบันทึก)
 async function saveProject(o){
   o=o||{};
-  if(o.auto&&tier==='pending') return;
-  if(saving){ if(o.asNew){ await saving.catch(()=>{}); } else { saveQueued=true; return; } }
+  if(o.auto){
+    if(tier==='pending') return false;
+    if(lockBusy){ saveQueued=true; return false; }
+  }else if(tier==='pending'&&cloudReady){
+    savingNow=true; updateStatus();
+    await Promise.race([cloudReady.catch(()=>{}),sleep(10000)]);
+    savingNow=false; updateStatus();
+  }
+  if(!o.asNew&&!o.force&&remoteMeta&&cur.id&&cur.storage==='cloud'){
+    showBanner('changed',remoteMeta); $('#banner').scrollIntoView({block:'nearest'});
+    if(!o.auto) toast('มีเวอร์ชันที่บันทึกจากที่อื่น — เลือกวิธีจัดการที่แถบด้านบนก่อน',4500);
+    return false;
+  }
+  return withLock(()=>doSave(o));
+}
+async function doSave(o){
+  const gen=planGen;
   let st=(!o.asNew&&cur.id)?cur.storage:defaultStorage();
   if(st==='cloud'&&!cloudWritable()){
-    if(o.auto){ saveErr={code:'invalid_argument'}; updateStatus(); return; }   // ไม่ย้ายที่เก็บเองตอนบันทึกอัตโนมัติ
+    if(o.auto){ saveErr={code:Cloud.db?'invalid_argument':'cloud_unavailable'}; updateStatus(); return false; }   // ไม่ย้ายที่เก็บเองตอนบันทึกอัตโนมัติ
     st='local';
   }
-  const reuse=!o.asNew&&cur.id&&cur.storage===st;
-  const id=reuse?cur.id:('p'+uid()+uid().slice(0,4));
-  if(o.name!==undefined){ S.name=o.name; lsSet(KEY,JSON.stringify(S)); syncHeader(); }
-  const state=clone(S);
-  if(st==='cloud'&&JSON.stringify(state).length>240000){ saveErr={code:'too_big'}; updateStatus(); toast(errText(saveErr),4000); return; }
-  const prev=reuse?listOf(st).find(m=>m.id===id):null;
-  const rev=uid(), meta=makeMeta(st,state,prev,rev), h=hashStr(JSON.stringify(content(state)));
-  myRevs.add(rev); savingNow=true; saveErr=null; updateStatus();
-  const run=(async()=>{
+  const reuse=!o.asNew&&!!cur.id&&cur.storage===st;
+  if(reuse&&!o.force&&o.name===undefined&&!dirty()){ if(!o.silent) toast('บันทึกแล้ว — ไม่มีการเปลี่ยนแปลงใหม่'); return true; }
+  const id=reuse?cur.id:newPid();
+  const state=clone(S); if(o.name!==undefined) state.name=o.name;
+  if(st==='cloud'&&JSON.stringify(state).length>240000){ saveErr={code:'too_big'}; updateStatus(); toast(errText(saveErr),4500); return false; }
+  const h=hashStr(JSON.stringify(content(state))), rev=uid();
+  savingNow=true; saveErr=null; updateStatus();
+  try{
+    let prev=reuse?listOf(st).find(m=>m.id===id):null;
+    if(st==='cloud'&&reuse){
+      // ตรวจก่อนเขียน: มีคนอื่นบันทึกทับหรือถูกลบไปแล้วหรือไม่
+      const snap=await retry1(()=>Cloud.db.doc('projects/'+id).get());
+      if(snap.exists){
+        const m=Object.assign({id},snap.data()); prev=m;
+        if(m.rev&&!myRevs.has(m.rev)&&m.hash!==h&&!o.force) throw {code:'conflict',meta:m};
+      }else if(o.auto) throw {code:'gone'};
+    }
+    const meta=makeMeta(state,prev,rev,h);
+    myRevs.add(rev);
     await storePut(st,id,meta,state);
+    if(gen!==planGen){ if(!o.silent) toast(`บันทึก “${meta.name}” แล้ว`); return true; }   // เปลี่ยนแบบไปแล้วระหว่างบันทึก: ไม่ผูกแบบใหม่กับโปรเจคนี้
     const movedFrom=(cur.id&&cur.storage!==st&&!o.asNew)?cur.storage:null;
+    if(o.name!==undefined){ S.name=o.name; syncHeader(); }
     cur={id,storage:st,rev,savedHash:h,savedAt:meta.updatedAt,baseHash:null};
     remoteMeta=null; remoteDeleted=false; hideBanner(); persistCur();
-    return movedFrom;
-  })();
-  saving=run;
-  try{
-    const movedFrom=await run;
     if(!o.silent) toast(o.asNew?`บันทึกเป็นโปรเจคใหม่ “${meta.name}” แล้ว`:(movedFrom?'บันทึกลงเบราว์เซอร์นี้แล้ว (คลาวด์ไม่พร้อมหรือไม่มีสิทธิ์)':'บันทึกโปรเจคแล้ว'));
+    return true;
   }catch(e){
-    saveErr=e||{}; if(st==='cloud'){ if(e&&e.code==='invalid_argument') Cloud.writeDenied=true; if(cloudLost(e)) toast('การเชื่อมต่อที่เก็บคลาวด์หยุดลง — กดบันทึกอีกครั้งเพื่อบันทึกลงเบราว์เซอร์',4500); }
-    if(!o.auto||saveErr.code!=='unavailable') toast(errText(saveErr)+((st==='cloud'&&saveErr.code==='invalid_argument')?' — กดบันทึกอีกครั้งเพื่อบันทึกลงเบราว์เซอร์':''),4500);
+    const c=e&&e.code;
+    if(c==='conflict'){ if(gen===planGen&&cur.id===id){ remoteMeta=e.meta; clearTimeout(autoT); showBanner('changed',e.meta); if(!o.auto) toast('มีเวอร์ชันที่บันทึกจากที่อื่น — เลือกวิธีจัดการที่แถบด้านบน',4500); } return false; }
+    if(c==='gone'){ if(gen===planGen&&cur.id===id) markDeletedRemotely(); return false; }
+    saveErr=e||{};
+    if(st==='cloud'){
+      if(c==='invalid_argument') Cloud.writeDenied=true;
+      if(cloudLost(e)){ toast('การเชื่อมต่อที่เก็บคลาวด์หยุดลง — กดบันทึกอีกครั้งเพื่อบันทึกลงเบราว์เซอร์',4500); return false; }
+    }
+    if(!o.auto||c!=='unavailable') toast(errText(saveErr)+((st==='cloud'&&c==='invalid_argument')?' — กดบันทึกอีกครั้งเพื่อบันทึกลงเบราว์เซอร์':''),4500);
+    return false;
   }finally{
-    saving=null; savingNow=false; updateStatus(); renderProjects();
-    if(saveQueued){ saveQueued=false; if(cur.id&&dirty()) saveProject({silent:true,auto:true}); }
+    savingNow=false; updateStatus(); renderProjects();
   }
 }
 
@@ -1291,6 +1353,7 @@ let autoT=null;
 function scheduleAutosave(){
   clearTimeout(autoT);
   if(!autoOn||!cur.id||remoteMeta||remoteDeleted||tier==='pending') return;
+  if(cur.storage==='cloud'&&(!Cloud.db||!Cloud.synced)) return;   // รอรายการจากเซิร์ฟเวอร์ก่อน / คลาวด์ใช้ไม่ได้
   if(!dirty()) return;
   autoT=setTimeout(()=>{ if(cur.id&&dirty()&&!remoteMeta) saveProject({silent:true,auto:true}); },3000);
 }
@@ -1300,12 +1363,13 @@ function updateStatus(){
   const el=$('#saveState'); if(!el||!S) return;
   const d=dirty();
   let cls='', txt='';
-  if(savingNow){ cls='busy'; txt='กำลังบันทึก…'; }
+  if(savingNow){ cls='busy'; txt=tier==='pending'?'กำลังเชื่อมต่อที่เก็บ…':'กำลังบันทึก…'; }
   else if(saveErr&&d){ cls='bad'; txt='✕ บันทึกไม่สำเร็จ'; }
   else if(!cur.id){ cls=d?'warn':''; txt=d?'● ยังไม่ได้บันทึกเป็นโปรเจค':'แบบร่าง (ยังไม่บันทึก)'; }
   else if(d){ cls='warn'; txt='● มีการแก้ไขที่ยังไม่บันทึก'; }
   else { cls='ok'; txt=`✓ บันทึกแล้ว ${fmtTime(cur.savedAt)}`; }
-  const where=cur.id?(cur.storage==='cloud'?'คลาวด์ (ใช้ร่วมกัน)':'เบราว์เซอร์นี้')
+  const where=cur.id
+    ?(cur.storage==='cloud'?(Cloud.db?'คลาวด์ (ใช้ร่วมกัน)':(tier==='pending'?'คลาวด์ (กำลังเชื่อมต่อ…)':'คลาวด์ (เชื่อมต่อไม่ได้ — กดบันทึกเพื่อเก็บในเบราว์เซอร์)')):'เบราว์เซอร์นี้')
     :(tier==='pending'?'กำลังเชื่อมต่อที่เก็บ…':(cloudWritable()?'จะบันทึกบนคลาวด์':'จะบันทึกในเบราว์เซอร์นี้'));
   el.className='state '+cls;
   el.innerHTML=`<span>${esc(txt)}</span><small>${esc(where)}</small>`;
@@ -1331,11 +1395,11 @@ function showBanner(kind,m){
 function hideBanner(){ const el=$('#banner'); el.hidden=true; el.innerHTML=''; }
 $('#banner').addEventListener('click',async e=>{
   const b=e.target.closest('[data-bn]'); if(!b) return; const a=b.dataset.bn;
-  if(a==='reload'&&remoteMeta){ await openProject('cloud',remoteMeta.id,{force:true}); }
-  else if(a==='overwrite'&&remoteMeta){ myRevs.add(remoteMeta.rev); remoteMeta=null; hideBanner(); await saveProject({}); }
-  else if(a==='saveas'){ if(remoteMeta) myRevs.add(remoteMeta.rev); remoteMeta=null; hideBanner(); await saveProject({asNew:true,name:(S.name||'โปรเจค')+' (ของฉัน)'}); }
-  else if(a==='keep'){ remoteDeleted=false; hideBanner(); await saveProject({asNew:true}); }
-  else if(a==='dismiss'){ remoteDeleted=false; hideBanner(); }
+  if(a==='reload'&&remoteMeta){ await openProject('cloud',remoteMeta.id); }
+  else if(a==='overwrite'&&remoteMeta){ const rm=remoteMeta; myRevs.add(rm.rev); remoteMeta=null; hideBanner(); const ok=await saveProject({force:true}); if(!ok&&!remoteMeta&&cur.id===rm.id&&!saveErr){ remoteMeta=rm; showBanner('changed',rm); } }
+  else if(a==='saveas'){ const rm=remoteMeta; remoteMeta=null; hideBanner(); const ok=await saveProject({asNew:true,name:(S.name||'โปรเจค')+' (ของฉัน)'}); if(!ok&&rm&&cur.id===rm.id){ remoteMeta=rm; clearTimeout(autoT); showBanner('changed',rm); } }
+  else if(a==='keep'){ remoteDeleted=false; hideBanner(); const ok=await saveProject({asNew:true}); if(!ok){ remoteDeleted=true; showBanner('deleted'); } }
+  else if(a==='dismiss'){ remoteDeleted=false; hideBanner(); updateStatus(); }
 });
 
 async function whoInto(el,id,prefix){
@@ -1356,32 +1420,50 @@ async function initCloud(){
     try{ Cloud.canWrite=await Cloud.user.can('data.write'); }catch(e){}
   }
   tier='cloud';
+  subscribeProjects();
+  afterTier();
+}
+let listRetry=0, listTimer=null;
+function subscribeProjects(){
+  if(!Cloud.db) return;
   try{
-    Cloud.unsub=db.collection('projects').onSnapshot(snap=>{
+    Cloud.unsub=Cloud.db.collection('projects').onSnapshot(snap=>{
+      listRetry=0;
       Cloud.metas=snap.docs.filter(d=>d.exists).map(d=>Object.assign({id:d.id},d.data()));
+      Cloud.metas.forEach(m=>Cloud.seen.add(m.id));
       Cloud.fromCache=!!(snap.metadata&&snap.metadata.fromCache);
       onCloudList();
     },err=>{
-      Cloud.db=null; Cloud.unsub=null; tier='local'; updateStatus(); renderProjects();
-      if(!(err&&err.code==='revoked')) toast('เชื่อมต่อรายการโปรเจคบนคลาวด์ไม่ได้ — บันทึกในเบราว์เซอร์แทน',4500);
+      Cloud.unsub=null; const c=err&&err.code;
+      if(['revoked','not_granted','capability_disabled','capability_removed','invalid_argument','transform_error'].includes(c)){
+        Cloud.db=null; tier='local'; updateStatus(); renderProjects(); scheduleAutosave();
+        if(c!=='revoked') toast('ที่เก็บคลาวด์ใช้ไม่ได้ในหน้านี้ — บันทึกในเบราว์เซอร์แทน',4500);
+        return;
+      }
+      // unavailable / resource_exhausted / อื่นๆ = ชั่วคราว: ใช้คลาวด์ต่อ แล้วสมัครรับรายการใหม่
+      Cloud.fromCache=true; clearTimeout(listTimer);
+      listTimer=setTimeout(subscribeProjects,Math.min(30000,1000*Math.pow(2,listRetry++))+Math.random()*500);
     });
-  }catch(e){ Cloud.db=null; tier='local'; }
-  afterTier();
+  }catch(e){ Cloud.db=null; tier='local'; updateStatus(); renderProjects(); }
 }
-function afterTier(){
-  if(cur.storage==='cloud'&&tier==='local') { /* เปิดนอก claude.ai: ใช้ working copy ต่อ บันทึกครั้งหน้าจะลงเบราว์เซอร์ */ }
-  updateStatus(); renderProjects(); scheduleAutosave();
-}
+function afterTier(){ updateStatus(); renderProjects(); scheduleAutosave(); }
 function onCloudList(){
-  if(cur.id&&cur.storage==='cloud'&&!savingNow){
+  if(Cloud.db&&!Cloud.fromCache&&cur.id&&cur.storage==='cloud'&&!savingNow&&!lockBusy&&!opening){
     const m=Cloud.metas.find(x=>x.id===cur.id);
     if(!m){
-      if(!Cloud.fromCache&&!remoteDeleted){ remoteDeleted=true; remoteMeta=null; cur={id:null,storage:null,rev:null,savedHash:null,savedAt:null,baseHash:null}; persistCur(); showBanner('deleted'); }
+      if(!remoteDeleted&&Cloud.seen.has(cur.id)) markDeletedRemotely();
     }else if(m.rev&&!myRevs.has(m.rev)){
-      if(!dirty()){ openProject('cloud',m.id,{force:true,quiet:true}).then(ok=>{ if(ok) toast('โหลดเวอร์ชันล่าสุดของโปรเจคที่บันทึกจากที่อื่นแล้ว',3500); }); }
-      else if(!remoteMeta||remoteMeta.rev!==m.rev){ remoteMeta=m; clearTimeout(autoT); showBanner('changed',m); }
+      if(m.hash&&m.hash===contentHash()){
+        // เนื้อหาเหมือนแบบบนจอ (เช่น การบันทึกของเราเองที่ยังไม่ได้รับยืนยัน)
+        myRevs.add(m.rev); cur.rev=m.rev; cur.savedHash=m.hash; cur.savedAt=m.updatedAt||cur.savedAt;
+        if(remoteMeta){ remoteMeta=null; hideBanner(); } persistCur();
+      }else if(!dirty()){
+        const exp=contentHash();
+        openProject('cloud',m.id,{quiet:true,expectHash:exp}).then(r=>{ if(r===true) toast('โหลดเวอร์ชันล่าสุดของโปรเจคที่บันทึกจากที่อื่นแล้ว',3500); else if(r==='stale') onCloudList(); });
+      }else if(!remoteMeta||remoteMeta.rev!==m.rev){ remoteMeta=m; clearTimeout(autoT); showBanner('changed',m); }
     }
   }
+  if(Cloud.db&&!Cloud.fromCache&&!Cloud.synced){ Cloud.synced=true; scheduleAutosave(); }
   updateStatus(); renderProjects();
 }
 
@@ -1390,14 +1472,19 @@ let opening=false;
 async function openProject(st,id,o){
   o=o||{};
   if(opening) return false; opening=true;
+  const gen=planGen;
   try{
     if(st==='cloud'&&!Cloud.db){ toast('ที่เก็บคลาวด์ไม่พร้อมในขณะนี้'); return false; }
-    const state=await storeGet(st,id);
-    if(!state||!valid(state)){ toast('เปิดโปรเจคไม่ได้: ไม่พบข้อมูลแบบของโปรเจคนี้',3500); return false; }
-    const m=listOf(st).find(x=>x.id===id);
-    loadState(normalize(state));
-    cur={id,storage:st,rev:(m&&m.rev)||null,savedHash:contentHash(),savedAt:(m&&m.updatedAt)||null,baseHash:null};
-    if(cur.rev) myRevs.add(cur.rev);
+    const metaOf=()=>listOf(st).find(x=>x.id===id);
+    let r=await storeGet(st,id);
+    let mm=metaOf();
+    if(st==='cloud'&&r&&mm&&r.rev&&mm.rev&&r.rev!==mm.rev){ await sleep(800); r=(await storeGet(st,id))||r; mm=metaOf(); }
+    if(o.expectHash!==undefined&&(gen!==planGen||cur.id!==id||contentHash()!==o.expectHash)) return 'stale';
+    if(!r||!valid(r.state)){ toast('เปิดโปรเจคไม่ได้: ไม่พบข้อมูลแบบของโปรเจคนี้',3500); return false; }
+    loadState(normalize(r.state));
+    const rev=(mm&&mm.rev)||r.rev||null;
+    cur={id,storage:st,rev,savedHash:contentHash(),savedAt:(mm&&mm.updatedAt)||null,baseHash:null};
+    if(rev) myRevs.add(rev); if(r.rev) myRevs.add(r.rev);
     remoteMeta=null; remoteDeleted=false; saveErr=null; hideBanner(); persistCur(); updateStatus(); renderProjects();
     if(!o.quiet) toast(`เปิดโปรเจค “${S.name}” แล้ว`);
     return true;
@@ -1407,12 +1494,13 @@ async function openProject(st,id,o){
   }finally{ opening=false; }
 }
 function loadState(st){
+  planGen++; clearTimeout(autoT); saveQueued=false;
   S=st; sel=null; measure=null; hist=[]; redoStack=[];
-  lsSet(KEY,JSON.stringify(S)); syncHeader(); renderAll(); fit();
+  syncHeader(); renderAll(); fit();
 }
 function startDraft(st,msg){
   loadState(st);
-  cur={id:null,storage:null,rev:null,savedHash:null,savedAt:null,baseHash:contentHash()};
+  cur=Object.assign({},NOCUR,{baseHash:contentHash()});
   remoteMeta=null; remoteDeleted=false; saveErr=null; hideBanner(); persistCur(); updateStatus(); renderProjects();
   if(msg) toast(msg);
 }
@@ -1457,15 +1545,16 @@ function projRow(m,st){
   const ren=pmState.renaming&&pmState.renaming.id===m.id&&pmState.renaming.st===st;
   const armed=pmState.delArm&&pmState.delArm.id===m.id&&pmState.delArm.st===st;
   const busy=pmState.busy===st+':'+m.id;
-  const name=ren?`<div class="pm-row"><input type="text" id="pmRename" value="${esc(m.name||'')}" aria-label="ชื่อใหม่"><button class="btn sm primary" type="button" data-pa="renameok">ตกลง</button><button class="btn sm" type="button" data-pa="renamecancel">ยกเลิก</button></div>`
+  const name=ren?`<div class="pm-row"><input type="text" id="pmRename" value="${esc(pmState.renaming.value)}" aria-label="ชื่อใหม่"><button class="btn sm primary" type="button" data-pa="renameok">ตกลง</button><button class="btn sm" type="button" data-pa="renamecancel">ยกเลิก</button></div>`
     :`<div class="pname">${esc(m.name||'ไม่มีชื่อ')}${isCur?'<span class="tag">เปิดอยู่</span>':''}</div>`;
   const meta=`${m.shopW?dimsShort(m.shopW,m.shopL)+' cm':''} · ซัก ${c.washer||0} · อบ ${c.dryer||0}${c.stack?` · Stack ${c.stack}`:''} · ถัง ${m.pockets||0} · CCTV ${c.cctv||0}`;
   const who=`บันทึก ${esc(fmtTime(m.updatedAt))} <span data-uid="${esc(m.updatedBy||'')}"></span>`;
-  const acts=ren?'':`<button class="btn sm" type="button" data-pa="open" ${busy?'disabled':''}>${isCur?'เปิดใหม่':'เปิด'}</button>
-    <button class="btn sm" type="button" data-pa="rename">เปลี่ยนชื่อ</button>
-    <button class="btn sm" type="button" data-pa="dup">ทำสำเนา</button>
-    ${st==='local'&&cloudWritable()?'<button class="btn sm" type="button" data-pa="upload">ย้ายขึ้นคลาวด์</button>':''}
-    <button class="btn sm danger ${armed?'armed':''}" type="button" data-pa="del">${armed?'ยืนยันลบ':'ลบ'}</button>`;
+  const dis=busy||pmState.busy?'disabled':'';
+  const acts=ren?'':`<button class="btn sm" type="button" data-pa="open" ${dis}>${isCur?'เปิดใหม่':'เปิด'}</button>
+    <button class="btn sm" type="button" data-pa="rename" ${dis}>เปลี่ยนชื่อ</button>
+    <button class="btn sm" type="button" data-pa="dup" ${dis}>ทำสำเนา</button>
+    ${st==='local'&&cloudWritable()?`<button class="btn sm" type="button" data-pa="upload" ${dis}>ย้ายขึ้นคลาวด์</button>`:''}
+    <button class="btn sm danger ${armed?'armed':''}" type="button" data-pa="del" ${dis}>${armed?'ยืนยันลบ':'ลบ'}</button>`;
   return `<li class="${isCur?'cur':''}" data-pid="${esc(m.id)}" data-st="${st}">${name}<div class="pacts">${acts}</div><div class="pmeta">${meta}</div><div class="pwho">${who}</div></li>`;
 }
 function renderProjects(){
@@ -1480,16 +1569,21 @@ function renderProjects(){
   let h='';
   secs.forEach(sc=>{
     h+=`<div class="eyebrow" style="margin:6px 0">${sc.title} (${sc.items.length})</div>`;
-    if(!sc.items.length) h+=`<div class="pempty">${q?'ไม่พบโปรเจคที่ตรงกับคำค้น':(sc.st==='cloud'&&Cloud.fromCache?'กำลังโหลดรายการ…':'ยังไม่มีโปรเจค — กด “บันทึก” เพื่อเก็บแบบปัจจุบันเป็นโปรเจคแรก')}</div>`;
+    if(!sc.items.length) h+=`<div class="pempty">${q?'ไม่พบโปรเจคที่ตรงกับคำค้น':(sc.st==='cloud'&&!Cloud.synced?'กำลังโหลดรายการ…':'ยังไม่มีโปรเจค — กด “บันทึก” เพื่อเก็บแบบปัจจุบันเป็นโปรเจคแรก')}</div>`;
     else h+=`<ul class="plist">${sc.items.map(m=>projRow(m,sc.st)).join('')}</ul>`;
   });
+  const ae=document.activeElement, hadRn=!!ae&&ae.id==='pmRename', s0=hadRn?ae.selectionStart:0, s1=hadRn?ae.selectionEnd:0;
   el.innerHTML=h;
   if(Cloud.user){
     const spans=[...el.querySelectorAll('[data-uid]')].filter(s=>s.dataset.uid);
     const ids=[...new Set(spans.map(s=>s.dataset.uid))];
     if(ids.length) Cloud.user.profiles(ids).then(ps=>{ spans.forEach(s=>{ const p=ps&&ps[s.dataset.uid]; if(p&&p.name) s.textContent='โดย '+(p.isMe?'คุณ':p.name); }); }).catch(()=>{});
   }
-  const rn=$('#pmRename'); if(rn&&document.activeElement!==rn){ rn.focus(); rn.select(); }
+  const rn=$('#pmRename');
+  if(rn&&pmState.renaming){
+    if(pmState.renaming.focus){ pmState.renaming.focus=false; rn.focus(); rn.select(); }
+    else if(hadRn){ rn.focus(); try{ rn.setSelectionRange(s0,s1); }catch(_){} }
+  }
 }
 function renderConfirm(){
   const el=$('#pmConfirm'); if(!el) return;
@@ -1510,7 +1604,10 @@ function renderSaveAs(){
   const i=$('#pmNewName'); i.focus(); i.select();
 }
 
-$('#modal').addEventListener('input',e=>{ if(e.target.id==='pmSearch') renderProjects(); });
+$('#modal').addEventListener('input',e=>{
+  if(e.target.id==='pmSearch') renderProjects();
+  else if(e.target.id==='pmRename'&&pmState.renaming) pmState.renaming.value=e.target.value;
+});
 $('#modal').addEventListener('keydown',e=>{
   if(e.key!=='Enter') return;
   if(e.target.id==='pmRename'){ e.preventDefault(); const b=$('[data-pa="renameok"]'); if(b) b.click(); }
@@ -1521,7 +1618,7 @@ $('#modal').addEventListener('click',async e=>{
   const cf=e.target.closest('[data-cf]');
   if(cf){
     const c=pmState.confirm; pmState.confirm=null; renderConfirm(); if(!c) return;
-    if(cf.dataset.cf==='save'){ await saveProject({}); if(!dirty()) c.next(); else toast('ยังบันทึกไม่สำเร็จ จึงยังไม่ดำเนินการต่อ',3500); }
+    if(cf.dataset.cf==='save'){ const ok=await saveProject({}); if(ok&&!dirty()) c.next(); else toast('ยังบันทึกไม่สำเร็จ จึงยังไม่ดำเนินการต่อ',3500); }
     else if(cf.dataset.cf==='discard') c.next();
     return;
   }
@@ -1540,59 +1637,73 @@ $('#modal').addEventListener('click',async e=>{
     if(a==='json') return openJson();
     return;
   }
-  const pa=e.target.closest('[data-pa]'); if(!pa) return;
+  const pa=e.target.closest('[data-pa]'); if(!pa||pa.disabled) return;
   const li=pa.closest('[data-pid]'); if(!li) return;
   const id=li.dataset.pid, st=li.dataset.st, act=pa.dataset.pa;
   const m=listOf(st).find(x=>x.id===id); if(!m) return;
   if(act!=='del'&&pmState.delArm){ pmState.delArm=null; }
+  const writable=()=>st!=='cloud'||cloudWritable();
   if(act==='open'){
     const isCur=cur.id===id&&cur.storage===st;
     return guardDirty(isCur?'เปิดเวอร์ชันที่บันทึกไว้':'เปิดโปรเจคอื่น',async()=>{ pmState.busy=st+':'+id; renderProjects(); const ok=await openProject(st,id); pmState.busy=null; if(ok) closeModal(); else renderProjects(); });
   }
-  if(act==='rename'){ pmState.renaming={id,st}; return renderProjects(); }
+  if(act==='rename'){ pmState.renaming={id,st,value:m.name||'',focus:true}; return renderProjects(); }
   if(act==='renamecancel'){ pmState.renaming=null; return renderProjects(); }
   if(act==='renameok'){
-    const n=($('#pmRename').value||'').trim(); pmState.renaming=null;
-    if(!n||n===m.name){ return renderProjects(); }
+    const n=String(pmState.renaming&&pmState.renaming.value||'').trim(); pmState.renaming=null;
+    if(!n||n===m.name) return renderProjects();
+    if(!writable()){ toast(errText({code:Cloud.db?'invalid_argument':'cloud_unavailable'}),4000); return renderProjects(); }
+    const isCur=cur.id===id&&cur.storage===st; if(isCur) clearTimeout(autoT);
+    pmState.busy=st+':'+id; renderProjects();
     try{
-      if(st==='cloud'&&!cloudWritable()) throw {code:'invalid_argument'};
-      const rev=await storeRename(st,id,n);
-      if(cur.id===id&&cur.storage===st){ const wasDirty=dirty(); S.name=n; lsSet(KEY,JSON.stringify(S)); syncHeader(); cur.rev=rev; if(!wasDirty) cur.savedHash=contentHash(); persistCur(); }
+      await withLock(async()=>{
+        const rev=await storeRename(st,id,n);
+        if(cur.id===id&&cur.storage===st){ const wasDirty=dirty(); S.name=n; syncHeader(); cur.rev=rev; if(!wasDirty) cur.savedHash=contentHash(); persistCur(); }
+      });
       toast('เปลี่ยนชื่อโปรเจคแล้ว');
     }catch(err){ toast(errText(err),4000); }
-    updateStatus(); return renderProjects();
+    pmState.busy=null; updateStatus(); scheduleAutosave(); return renderProjects();
   }
   if(act==='dup'||act==='upload'){
     const target=act==='upload'?'cloud':(st==='cloud'&&cloudWritable()?'cloud':'local');
+    if(act==='upload'&&!cloudWritable()){ toast(errText({code:Cloud.db?'invalid_argument':'cloud_unavailable'}),4000); return; }
+    const isCur=cur.id===id&&cur.storage===st; if(isCur&&act==='upload') clearTimeout(autoT);
     pmState.busy=st+':'+id; renderProjects();
     try{
-      const state=await storeGet(st,id); if(!state) throw {code:'missing'};
-      if(act==='dup') state.name=(state.name||'โปรเจค')+' (สำเนา)';
-      const nid=act==='upload'?id:('p'+uid()+uid().slice(0,4));
-      const rev=uid(); myRevs.add(rev);
-      await storePut(target,nid,makeMeta(target,state,act==='upload'?m:null,rev),state);
-      if(act==='upload'){
-        await storeDel('local',id);
-        if(cur.id===id&&cur.storage==='local'){ cur.storage='cloud'; cur.rev=rev; persistCur(); }
-        toast('ย้ายโปรเจคขึ้นคลาวด์แล้ว');
-      }else toast(`ทำสำเนาเป็น “${state.name}” แล้ว`);
-    }catch(err){ toast(err&&err.code==='missing'?'ไม่พบข้อมูลแบบของโปรเจคนี้':errText(err),4000); }
-    pmState.busy=null; updateStatus(); return renderProjects();
+      await withLock(async()=>{
+        const r=await storeGet(st,id); if(!r||!valid(r.state)) throw {code:'missing'};
+        const state=r.state;
+        if(act==='dup') state.name=(state.name||'โปรเจค')+' (สำเนา)';
+        const nid=act==='upload'?id:newPid();
+        const h=hashStr(JSON.stringify(content(state))), rev=uid(); myRevs.add(rev);
+        await storePut(target,nid,makeMeta(state,act==='upload'?m:null,rev,h),state);
+        if(act==='upload'){
+          await storeDel('local',id);
+          if(cur.id===id&&cur.storage==='local'){ cur.storage='cloud'; cur.rev=rev; cur.savedHash=h; persistCur(); }
+        }
+        toast(act==='upload'?'ย้ายโปรเจคขึ้นคลาวด์แล้ว':`ทำสำเนาเป็น “${state.name}” แล้ว`);
+      });
+    }catch(err){ toast(errText(err),4000); }
+    pmState.busy=null; updateStatus(); scheduleAutosave(); return renderProjects();
   }
   if(act==='del'){
     if(!(pmState.delArm&&pmState.delArm.id===id&&pmState.delArm.st===st)){
-      pmState.delArm={id,st}; renderProjects();
-      setTimeout(()=>{ if(pmState.delArm&&pmState.delArm.id===id){ pmState.delArm=null; renderProjects(); } },4000);
+      const arm={id,st}; pmState.delArm=arm; renderProjects();
+      setTimeout(()=>{ if(pmState.delArm===arm){ pmState.delArm=null; renderProjects(); } },4000);
       return;
     }
     pmState.delArm=null;
+    if(!writable()){ toast(errText({code:Cloud.db?'invalid_argument':'cloud_unavailable'}),4000); return renderProjects(); }
+    if(cur.id===id&&cur.storage===st){ clearTimeout(autoT); saveQueued=false; }
+    pmState.busy=st+':'+id; renderProjects();
     try{
-      if(st==='cloud'&&!cloudWritable()) throw {code:'invalid_argument'};
-      if(cur.id===id&&cur.storage===st){ cur={id:null,storage:null,rev:null,savedHash:null,savedAt:null,baseHash:null}; persistCur(); }
-      await storeDel(st,id);
+      await withLock(async()=>{
+        await storeDel(st,id);
+        if(cur.id===id&&cur.storage===st){ cur=Object.assign({},NOCUR); persistCur(); }
+      });
       toast(`ลบโปรเจค “${m.name||''}” แล้ว`);
     }catch(err){ toast(errText(err),4000); }
-    updateStatus(); return renderProjects();
+    pmState.busy=null; updateStatus(); return renderProjects();
   }
 });
 
@@ -1711,12 +1822,21 @@ function wire(){
     }
   });
   const gapHint=()=>{ $('#aGapHint').textContent=unitHint(gapMM()); };
+  $('#libList').addEventListener('input',e=>{
+    const id=e.target.id; if(!/^c[WDHC]$/.test(id)) return;
+    const v=parseFloat(e.target.value), mm=isFinite(v)?mmFromCm(v):0, h=$('#'+id+'Hint'); if(!h) return;
+    h.textContent=((id==='cW'||id==='cD')&&mm<10)?'ขั้นต่ำ 1 cm':unitHint(mm);
+  });
   $('#aGap').addEventListener('input',gapHint); gapHint();
 
   const ins=$('#inspector');
   ins.addEventListener('input',onField);
   ins.addEventListener('focusin',()=>{ insSnap=snapStr(); });
-  ins.addEventListener('change',()=>{ if(insSnap&&insSnap!==snapStr()){ pushHist(insSnap); insSnap=snapStr(); updUndo(); } });
+  ins.addEventListener('change',e=>{
+    const t=e.target, f=t&&t.dataset&&t.dataset.f, o=sel?findAny(sel):null;
+    if(o&&f&&t.type==='number'&&o[f]!=null){ const mm=+o[f]||0; t.value=t.dataset.scale==='10'?cmVal(mm):r1(mm); setUnitSuffix(t,mm); }
+    if(insSnap&&insSnap!==snapStr()){ pushHist(insSnap); insSnap=snapStr(); updUndo(); }
+  });
   ins.addEventListener('click',onInspAct);
   $('#summary').addEventListener('click',e=>{ const t=e.target.closest('[data-sel]'); if(t&&findAny(t.dataset.sel)){ sel=t.dataset.sel; renderAll(); } });
 
@@ -1749,11 +1869,13 @@ function wire(){
 /* ---------- boot ---------- */
 const boot=load();
 S=boot.state;
-try{ const c=JSON.parse(lsGet(CKEY)||'null'); if(c&&typeof c==='object'&&'id' in c) cur=Object.assign(cur,c); }catch(e){}
-if(!lsGet(CKEY)&&boot.fresh) cur.baseHash=contentHash();   // แบบตัวอย่างครั้งแรก = แบบร่างที่ยังไม่ถูกแก้
+if(boot.wc&&('id' in boot.wc)) cur=Object.assign({},NOCUR,boot.wc);   // ตัวชี้โปรเจคที่บันทึกคู่กับแบบนี้
+else if(boot.fresh) cur.baseHash=contentHash();                      // แบบตัวอย่างครั้งแรก = แบบร่างที่ยังไม่ถูกแก้
+// แบบเดิมจากเวอร์ชันก่อน (ไม่มีตัวชี้) = แบบร่างที่ยังไม่ได้บันทึกเป็นโปรเจค
 if(cur.rev) myRevs.add(cur.rev);
+writeWC();
 renderLibrary(); syncHeader(); wire(); renderAll(); updateStatus();
 requestAnimationFrame(fit);
-initCloud();
+cloudReady=initCloud();
 })();
 </script>
