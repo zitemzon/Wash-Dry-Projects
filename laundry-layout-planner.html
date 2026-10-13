@@ -63,11 +63,18 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 /* ---------- header ---------- */
 .top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding-block:12px 10px}
-.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex-wrap:wrap}
 .brand h1{font-family:var(--f-display);font-weight:600;font-size:20px;letter-spacing:.01em;margin:0;white-space:nowrap}
 .brand h1 b{color:var(--accent);font-weight:600}
-#planName{border:1px solid transparent;background:transparent;border-radius:6px;padding:3px 6px;min-width:0;width:16em;max-width:100%;color:var(--muted)}
-#planName:hover,#planName:focus{border-color:var(--line);background:var(--panel);color:var(--ink)}
+#planName{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:4px 8px;min-width:0;width:15em;max-width:100%;font-weight:500}
+#planName:focus{border-color:var(--accent);outline:none}
+.saveg{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.state{display:inline-grid;line-height:1.2;font-size:12px;padding:3px 9px;border-radius:7px;border:1px solid var(--line);background:var(--panel);min-width:0}
+.state small{font-size:10.5px;color:var(--muted)}
+.state.ok span{color:var(--ok)}
+.state.warn span{color:var(--warn)}
+.state.bad span{color:var(--bad)}
+.state.busy span{color:var(--accent)}
 .hgroup{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
 .hgroup .lbl{font-size:12px;color:var(--muted);letter-spacing:.02em}
 .num{width:5.6em;border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:5px 7px;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
@@ -76,11 +83,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .spacer{flex:1}
 .btn{border:1px solid var(--line);background:var(--panel);border-radius:7px;padding:6px 11px;cursor:pointer;white-space:nowrap;line-height:1.2}
 .btn:hover{border-color:var(--accent)}
-.btn.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.on,.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .btn.danger{color:var(--bad)}
 .btn.danger:hover{border-color:var(--bad)}
+.btn.danger.armed{background:var(--bad);border-color:var(--bad);color:var(--floor)}
 .btn.sm{padding:4px 8px;font-size:12.5px}
 .btn:disabled{opacity:.45;cursor:default}
+.banner{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-bottom:10px;padding:8px 12px;border:1px solid var(--warn);border-left-width:4px;border-radius:8px;background:var(--panel);font-size:13px}
+.banner .t{flex:1;min-width:12em}
 
 /* ---------- main grid ---------- */
 .main{flex:1;min-height:0;display:grid;grid-template-columns:288px minmax(0,1fr) 340px;gap:12px;padding-bottom:16px}
@@ -111,6 +121,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .addopts{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px;padding:10px 14px 12px;border-bottom:1px solid var(--line);background:var(--bg)}
 .addopts label{display:grid;gap:2px;font-size:11.5px;color:var(--muted)}
 .addopts .num,.addopts .sel{width:100%}
+.hint{font-size:10.5px;color:var(--warn);font-family:var(--f-mono)}
 .preset{display:grid;grid-template-columns:10px minmax(0,1fr) auto;align-items:start;column-gap:9px;row-gap:1px;text-align:left;width:100%;
   border:1px solid var(--line);background:var(--floor);border-radius:8px;padding:8px 9px;cursor:pointer}
 .preset:hover{border-color:var(--accent)}
@@ -124,7 +135,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .src.spec{color:var(--ok);border-color:currentColor}
 .src.retail{color:var(--accent);border-color:currentColor}
 .src.approx{color:var(--warn);border-color:currentColor}
-.note{font-size:11.5px;color:var(--muted);line-height:1.5}
+.note{font-size:11.5px;color:var(--muted);line-height:1.5;margin:0}
 .form{display:grid;grid-template-columns:1fr 1fr;gap:6px 8px}
 .form label{display:grid;gap:2px;font-size:11.5px;color:var(--muted)}
 .form .full{grid-column:1/-1}
@@ -143,13 +154,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .fld input,.fld select{border:0;background:transparent;padding:6px 8px;width:100%;min-width:0;color:var(--ink)}
 .fld input[type=number]{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .fld input:focus,.fld select:focus{outline:none}
-.fld em{font-style:normal;font-size:11px;padding-right:8px;color:var(--muted);font-family:var(--f-mono)}
+.fld em{font-style:normal;font-size:11px;padding-right:8px;color:var(--muted);font-family:var(--f-mono);white-space:nowrap}
+.fld em.mmx{color:var(--warn)}
 .seg{display:flex;gap:4px;flex-wrap:wrap}
 .seg .btn{flex:1;padding:5px 6px;font-size:12.5px}
 .swatches{display:flex;gap:6px}
 .sw{width:24px;height:24px;border-radius:6px;border:2px solid transparent;cursor:pointer;padding:0}
 .sw.on{border-color:var(--ink)}
-.empty{color:var(--muted);font-size:13px;line-height:1.6}
+.empty{color:var(--muted);font-size:13px;line-height:1.6;margin:0}
 .empty kbd,.keys kbd{font-family:var(--f-mono);font-size:11px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--floor)}
 .keys{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:12px;color:var(--muted);margin-top:4px}
 .readout{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
@@ -179,13 +191,32 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 /* modal */
 .modal{position:fixed;inset:0;background:rgba(10,14,18,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
-.modal .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;width:min(760px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden}
+.modal .box{background:var(--panel);border:1px solid var(--line);border-radius:12px;width:min(780px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden}
 .modal .mh{padding:12px 16px;font-weight:600;border-bottom:1px solid var(--line);font-family:var(--f-display);font-size:16px}
 .modal .mb{padding:14px 16px;overflow:auto;display:grid;gap:10px}
 .modal .mf{padding:10px 16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
 .modal textarea{width:100%;min-height:260px;font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-radius:8px;background:var(--floor);padding:10px;resize:vertical}
 .modal img{max-width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 14px;border-radius:8px;font-size:13px;z-index:30;pointer-events:none}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--panel);padding:8px 14px;border-radius:8px;font-size:13px;z-index:30;pointer-events:none;max-width:calc(100% - 32px)}
+
+/* project manager */
+.pm-actions{display:flex;flex-wrap:wrap;gap:6px}
+.pm-box{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--floor);display:grid;gap:8px}
+.pm-box.warnbox{border-color:var(--warn);border-left-width:4px}
+.pm-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pm-row input[type=text]{flex:1;min-width:10em;border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:6px 8px}
+.pm-tier{font-size:12px;color:var(--muted)}
+.pm-tier b{color:var(--ink);font-weight:600}
+#pmSearch{width:100%;border:1px solid var(--line);background:var(--floor);border-radius:6px;padding:6px 9px}
+.plist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.plist li{border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:var(--floor);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center}
+.plist li.cur{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.plist .pname{font-weight:600;overflow-wrap:anywhere}
+.plist .pmeta{grid-column:1;font-size:11.5px;color:var(--muted);font-family:var(--f-mono)}
+.plist .pwho{grid-column:1;font-size:11.5px;color:var(--muted)}
+.plist .pacts{grid-row:1/span 3;grid-column:2;display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:17em}
+.tag{display:inline-block;font-size:10.5px;padding:0 6px;border-radius:99px;background:var(--accent);color:var(--on-accent);margin-left:6px;vertical-align:1px;font-weight:500}
+.pempty{font-size:12.5px;color:var(--muted);padding:10px;border:1px dashed var(--line);border-radius:8px}
 
 @media (max-width:1180px){
   html,body{height:auto}
@@ -199,6 +230,8 @@ button,input,select,textarea{font:inherit;color:inherit}
   .stage{height:68vh}
   .brand h1{font-size:18px}
   #planName{width:100%}
+  .plist li{grid-template-columns:minmax(0,1fr)}
+  .plist .pacts{grid-row:auto;grid-column:1;justify-content:flex-start;max-width:none}
 }
 @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
 </style>
@@ -206,40 +239,45 @@ button,input,select,textarea{font:inherit;color:inherit}
 <header class="top">
   <div class="brand">
     <h1>ผังร้าน<b>สะดวกซัก</b> 2D</h1>
-    <input id="planName" aria-label="ชื่อแบบผัง" value="">
+    <input id="planName" aria-label="ชื่อโปรเจค" placeholder="ชื่อโปรเจค" value="">
+    <div class="saveg">
+      <span id="saveState" class="state" role="status" aria-live="polite"><span>–</span><small>&nbsp;</small></span>
+      <button class="btn primary" id="bSave" type="button" title="บันทึกโปรเจค (Ctrl+S)">บันทึก</button>
+      <label class="chip" title="บันทึกโปรเจคอัตโนมัติ 3 วินาทีหลังแก้ไข"><input type="checkbox" id="oAuto">อัตโนมัติ</label>
+      <button class="btn" id="bProjects" type="button">โปรเจคทั้งหมด</button>
+    </div>
   </div>
   <div class="hgroup" role="group" aria-label="ขนาดร้าน">
     <span class="lbl">ขนาดร้าน กว้าง</span>
-    <input id="shopW" class="num" type="number" step="0.05" min="1" max="100" inputmode="decimal" aria-label="กว้าง (เมตร)">
+    <input id="shopW" class="num" type="number" step="any" min="100" max="10000" inputmode="decimal" aria-label="กว้าง (cm)">
     <span class="lbl">× ลึก</span>
-    <input id="shopL" class="num" type="number" step="0.05" min="1" max="100" inputmode="decimal" aria-label="ลึก (เมตร)">
-    <span class="lbl">m</span>
+    <input id="shopL" class="num" type="number" step="any" min="100" max="10000" inputmode="decimal" aria-label="ลึก (cm)">
+    <span class="lbl">cm</span>
     <span id="shopArea" class="area-pill">0 m²</span>
   </div>
   <div class="hgroup">
     <span class="lbl">กริด</span>
     <select id="gridSel" class="sel" aria-label="ระยะเส้นกริด">
-      <option value="100">100 mm</option><option value="250">250 mm</option><option value="500">500 mm</option><option value="1000">1,000 mm</option>
+      <option value="100">10 cm</option><option value="250">25 cm</option><option value="500">50 cm</option><option value="1000">100 cm</option>
     </select>
     <span class="lbl">Snap</span>
     <select id="snapSel" class="sel" aria-label="ระยะ snap">
-      <option value="1">ปิด (1 mm)</option><option value="10">10 mm</option><option value="50">50 mm</option><option value="100">100 mm</option><option value="250">250 mm</option><option value="500">500 mm</option>
+      <option value="1">ปิด (1 mm)</option><option value="10">1 cm</option><option value="50">5 cm</option><option value="100">10 cm</option><option value="250">25 cm</option><option value="500">50 cm</option>
     </select>
   </div>
   <div class="spacer"></div>
   <div class="hgroup">
-    <button class="btn" id="bJson" type="button">บันทึก / โหลด JSON</button>
     <button class="btn" id="bPng" type="button">ภาพ PNG</button>
-    <button class="btn danger" id="bReset" type="button">เริ่มแบบใหม่</button>
   </div>
 </header>
+<div id="banner" class="banner" role="alert" hidden></div>
 
 <main class="main">
   <!-- library -->
   <aside class="panel" id="library" aria-label="คลังเครื่องและอุปกรณ์">
     <div class="addopts">
       <label>จำนวนที่เพิ่ม<input id="aQty" class="num" type="number" min="1" max="40" value="1" inputmode="numeric"></label>
-      <label>ระยะห่างระหว่างเครื่อง<input id="aGap" class="num" type="number" min="0" step="10" value="20" inputmode="numeric"></label>
+      <label>ระยะห่างระหว่างเครื่อง (cm)<input id="aGap" class="num" type="number" min="0" step="any" value="2" inputmode="decimal"><span class="hint" id="aGapHint"></span></label>
       <label>เรียงต่อกันทาง<select id="aDir" class="sel"><option value="x">แนวนอน (→)</option><option value="y">แนวตั้ง (↓)</option></select></label>
       <label>หน้าเครื่องหันไปทาง<select id="aRot" class="sel"><option value="0">ลง ↓</option><option value="90">ซ้าย ←</option><option value="180">ขึ้น ↑</option><option value="270">ขวา →</option></select></label>
     </div>
@@ -269,7 +307,7 @@ button,input,select,textarea{font:inherit;color:inherit}
     <div class="status">
       <span>ตำแหน่ง <b id="stPos" class="mono">–</b></span>
       <span>มาตราส่วน <b id="stScale" class="mono">–</b></span>
-      <span>ตัวเลขระยะในแบบ หน่วย <b>mm</b></span>
+      <span>หน่วยระยะ <b>cm</b> (ต่ำกว่า 1 cm แสดงเป็น <b>mm</b>)</span>
       <span id="stMode">ลากเครื่องเพื่อย้าย · ลากพื้นที่ว่างเพื่อเลื่อนแบบ · ล้อเมาส์เพื่อซูม</span>
     </div>
   </section>
@@ -281,23 +319,52 @@ button,input,select,textarea{font:inherit;color:inherit}
   </aside>
 </main>
 
-<div id="modal" class="modal" hidden><div class="box" role="dialog" aria-modal="true"><div class="mh" id="mTitle"></div><div class="mb" id="mBody"></div><div class="mf" id="mFoot"></div></div></div>
+<div id="modal" class="modal" hidden><div class="box" role="dialog" aria-modal="true" aria-labelledby="mTitle"><div class="mh" id="mTitle"></div><div class="mb" id="mBody"></div><div class="mf" id="mFoot"></div></div></div>
 <div id="toast" class="toast" hidden></div>
+<input id="fileIn" type="file" accept="application/json,.json" hidden>
 
 <script>
 (function(){
 'use strict';
 /* =========================================================
-   1) ค่าคงที่ / ข้อมูลเครื่อง (หน่วย mm ทั้งหมด)
+   1) ค่าคงที่ / ข้อมูลเครื่อง
+   ข้อมูลภายในเก็บเป็น mm (จำนวนเต็ม) เสมอ — แสดงผลเป็น cm,
+   และค่าที่ต่ำกว่า 1 cm แสดงเป็น mm
    ========================================================= */
-const KEY='washdry-layout-v1';
+const KEY='washdry-layout-v1';          // แบบที่กำลังแก้ไข (working copy)
+const PKEY='washdry-projects-v1';       // โปรเจคที่บันทึกในเบราว์เซอร์
+const CKEY='washdry-current-v1';        // โปรเจคที่เปิดอยู่
+const AKEY='washdry-autosave';
 const $=(s,r=document)=>r.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Math.random().toString(36).slice(2,10);
-const fmt=n=>Math.round(n).toLocaleString('en-US');
-const m2=(mm2)=>(mm2/1e6);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const r1=v=>Math.round(v);
+const clone=o=>JSON.parse(JSON.stringify(o));
+const lsGet=k=>{ try{ return localStorage.getItem(k); }catch(e){ return null; } };
+const lsSet=(k,v)=>{ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } };
+
+/* ---------- หน่วย ---------- */
+// ระยะ/ขนาด: ≥ 1 cm → cm (ทศนิยมสูงสุด 1 ตำแหน่ง), < 1 cm → mm
+function fmtLen(mm,unit){
+  const u=unit!==false, a=Math.abs(+mm||0), sg=(+mm<0&&a>=.5)?'-':'';
+  if(a<10) return sg+Math.round(a)+(u?' mm':'');
+  return sg+(a/10).toLocaleString('en-US',{maximumFractionDigits:1})+(u?' cm':'');
+}
+// ขนาดคู่ เช่น 68.6×87.5 — ถ้ามีค่าใดต่ำกว่า 1 cm ใส่หน่วยทุกค่า
+function dimsShort(...v){ return v.every(x=>Math.abs(x)>=10)?v.map(x=>fmtLen(x,false)).join('×'):v.map(x=>fmtLen(x)).join('×'); }
+function fmtDims(...v){ v=v.filter(x=>x>0); return v.every(x=>x>=10)?v.map(x=>fmtLen(x,false)).join(' × ')+' cm':v.map(x=>fmtLen(x)).join(' × '); }
+const fmtArea=mm2=>(mm2/1e6).toFixed(2)+' m²';
+const cmVal=mm=>+(mm/10).toFixed(1);           // ค่าในช่องกรอก (cm)
+const mmFromCm=v=>Math.round(v*10);
+function unitHint(mm){ return (mm>0&&mm<10)?`= ${Math.round(mm)} mm`:''; }
+function fmtTime(iso){
+  if(!iso) return '';
+  const d=new Date(iso); if(isNaN(d)) return '';
+  const today=new Date().toDateString()===d.toDateString();
+  return today?d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})
+              :d.toLocaleString('th-TH',{day:'numeric',month:'short',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
 
 const KIND={
   washer:{label:'เครื่องซักผ้า',pre:'W'},
@@ -352,7 +419,7 @@ const PRE=Object.fromEntries(PRESETS.map(p=>[p.id,p]));
    ========================================================= */
 let S=null;
 let view={s:.06,tx:60,ty:60};
-let sel=null, mode='select', measure=null, drag=null, insSnap=null, hoverW=null;
+let sel=null, mode='select', measure=null, drag=null, insSnap=null;
 let hist=[], redoStack=[];
 let A={flags:{},cflag:{},issues:[]};
 const pointers=new Map(); let pinch=null;
@@ -392,9 +459,12 @@ function makeItem(p,rot,items){
 }
 
 /* ---------- ตัวอย่างเริ่มต้น (ข้อมูลสมมติ) ---------- */
-function sample(){
-  const T={v:1,name:'ตัวอย่าง – ร้าน 6.00 × 11.00 m',shopW:6000,shopL:11000,grid:500,snap:50,
+function blank(w,l,name){
+  return {v:1,name:name||'โปรเจคใหม่',shopW:w||6000,shopL:l||11000,grid:500,snap:50,
     magnet:true,showClear:true,showFov:true,showAll:false,showLbl:true,zones:[],items:[]};
+}
+function sample(){
+  const T=blank(6000,11000,'ตัวอย่าง – ร้าน 600 × 1,100 cm');
   const Z=(name,x,y,w,l,color)=>T.zones.push({id:uid(),name,x,y,w,l,color,locked:true});
   Z('โซนเครื่องอบ',0,0,6000,2200,'z2');
   Z('โซนเครื่องซัก / โต๊ะพับผ้า',0,2200,6000,4600,'z1');
@@ -419,19 +489,25 @@ function sample(){
 }
 
 function valid(o){
-  return o&&typeof o==='object'&&isFinite(o.shopW)&&isFinite(o.shopL)&&Array.isArray(o.items)&&Array.isArray(o.zones);
+  return !!o&&typeof o==='object'&&isFinite(o.shopW)&&isFinite(o.shopL)&&+o.shopW>0&&+o.shopL>0&&Array.isArray(o.items)&&Array.isArray(o.zones);
 }
 function normalize(o){
-  const d=sample();
+  const d=blank();
   ['grid','snap','magnet','showClear','showFov','showAll','showLbl','name'].forEach(k=>{if(o[k]===undefined) o[k]=d[k];});
-  o.items.forEach(i=>{ if(!i.id) i.id=uid(); if(isCam(i)){ i.angle=+i.angle||0; i.fov=+i.fov||90; i.range=+i.range||6000; } else { i.rot=[0,90,180,270].includes(+i.rot)?+i.rot:0; i.clear=+i.clear||0; i.units=+i.units||1; } });
-  o.zones.forEach(z=>{ if(!z.id) z.id=uid(); if(!ZCOL.includes(z.color)) z.color='z1'; });
+  o.v=1; o.shopW=r1(+o.shopW); o.shopL=r1(+o.shopL);
+  o.items=o.items.filter(i=>i&&typeof i==='object'&&KIND[i.kind]);
+  o.zones=o.zones.filter(z=>z&&typeof z==='object');
+  o.items.forEach(i=>{
+    if(!i.id) i.id=uid(); i.x=+i.x||0; i.y=+i.y||0; i.name=String(i.name??'');
+    if(isCam(i)){ i.angle=+i.angle||0; i.fov=+i.fov||90; i.range=+i.range||6000; }
+    else { i.rot=[0,90,180,270].includes(+i.rot)?+i.rot:0; i.w=Math.max(10,+i.w||10); i.d=Math.max(10,+i.d||10); i.clear=+i.clear||0; i.units=+i.units||1; }
+  });
+  o.zones.forEach(z=>{ if(!z.id) z.id=uid(); if(!ZCOL.includes(z.color)) z.color='z1'; z.x=+z.x||0; z.y=+z.y||0; z.w=Math.max(100,+z.w||100); z.l=Math.max(100,+z.l||100); z.name=String(z.name??''); });
   return o;
 }
-function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
 function load(){
-  try{ const raw=localStorage.getItem(KEY); if(raw){ const o=JSON.parse(raw); if(valid(o)) return normalize(o);} }catch(e){}
-  return sample();
+  try{ const raw=lsGet(KEY); if(raw){ const o=JSON.parse(raw); if(valid(o)) return {state:normalize(o),fresh:false}; } }catch(e){}
+  return {state:sample(),fresh:true};
 }
 
 /* ---------- history ---------- */
@@ -442,6 +518,9 @@ function commit(){ save(); renderAll(); }
 function undo(){ if(!hist.length) return; redoStack.push(snapStr()); S=JSON.parse(hist.pop()); afterLoad(); }
 function redo(){ if(!redoStack.length) return; hist.push(snapStr()); S=JSON.parse(redoStack.pop()); afterLoad(); }
 function afterLoad(){ if(sel&&!findAny(sel)) sel=null; syncHeader(); commit(); }
+
+/* working copy → localStorage, แล้วอัปเดตสถานะการบันทึกโปรเจค */
+function save(){ lsSet(KEY,JSON.stringify(S)); onContentChanged(); }
 
 /* =========================================================
    3) Analysis — ชน / ล้นขอบ / พื้นที่หน้าเครื่องถูกบัง
@@ -455,8 +534,8 @@ function analyze(){
   sol.forEach(i=>{
     const c=clearBox(i); if(!c) return;
     const hits=sol.filter(j=>j!==i&&ov(c,box(j)));
-    if(hits.length){ cflag[i.id]=1; issues.push({lv:'warn',id:i.id,t:`พื้นที่หน้าเครื่อง ${i.name} (${fmt(i.clear)} mm) ถูก ${hits.map(h=>h.name).join(', ')} บัง`}); }
-    else if(outside(c)){ cflag[i.id]=1; issues.push({lv:'warn',id:i.id,t:`${i.name} หันหน้าเข้าผนัง / ระยะหน้าเครื่องไม่ถึง ${fmt(i.clear)} mm`}); }
+    if(hits.length){ cflag[i.id]=1; issues.push({lv:'warn',id:i.id,t:`พื้นที่หน้าเครื่อง ${i.name} (${fmtLen(i.clear)}) ถูก ${hits.map(h=>h.name).join(', ')} บัง`}); }
+    else if(outside(c)){ cflag[i.id]=1; issues.push({lv:'warn',id:i.id,t:`${i.name} หันหน้าเข้าผนัง / ระยะหน้าเครื่องไม่ถึง ${fmtLen(i.clear)}`}); }
   });
   S.items.filter(isCam).forEach(c=>{ if(c.x<0||c.y<0||c.x>S.shopW||c.y>S.shopL) issues.push({lv:'warn',id:c.id,t:`กล้อง ${c.name} อยู่นอกขอบเขตร้าน`}); });
   return {flags,cflag,issues};
@@ -487,7 +566,7 @@ function gapsOf(it){
 const svg=$('#plan');
 const NS='vector-effect="non-scaling-stroke"';
 
-function dimLine(x1,y1,x2,y2,label,s,col,small,outside){
+function dimLine(x1,y1,x2,y2,label,s,col,small,outsideLbl){
   const px=n=>n/s, t=px(4), horiz=Math.abs(x2-x1)>=Math.abs(y2-y1);
   const len=Math.hypot(x2-x1,y2-y1);
   let h=`<g style="pointer-events:none"><g style="stroke:${col}"><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" ${NS} stroke-width="1"/>`;
@@ -497,15 +576,15 @@ function dimLine(x1,y1,x2,y2,label,s,col,small,outside){
   h+='</g>';
   const fs=px(small?9.5:10.5), tw=label.length*fs*.62+px(8), th=fs+px(5);
   let mx=(x1+x2)/2, my=(y1+y2)/2;
-  if(horiz&&len<tw) my-=th; if(!horiz&&(len<th*1.2||outside)) mx+=tw/2+px(4);
+  if(horiz&&len<tw) my-=th; if(!horiz&&(len<th*1.2||outsideLbl)) mx+=tw/2+px(4);
   h+=`<rect x="${mx-tw/2}" y="${my-th/2}" width="${tw}" height="${th}" rx="${px(3)}" style="fill:var(--floor);stroke:${col}" stroke-width="1" ${NS}/>`;
   h+=`<text x="${mx}" y="${my}" font-size="${fs}" text-anchor="middle" dominant-baseline="central" style="font-family:var(--f-mono);fill:${col}">${esc(label)}</text></g>`;
   return h;
 }
 
-function niceStep(s,target){ const c=[100,200,250,500,1000,2000,2500,5000,10000,20000]; for(const v of c){ if(v*s>=target) return v; } return 50000; }
+function niceStep(s,target){ const c=[10,20,50,100,200,250,500,1000,2000,2500,5000,10000,20000]; for(const v of c){ if(v*s>=target) return v; } return 50000; }
 
-function itemSVG(it,s,flag,cflag,selected){
+function itemSVG(it,s,flag){
   const W=it.w, D=it.d, cx=it.x+bw(it)/2, cy=it.y+bh(it)/2, k=it.kind;
   const col=`var(--c-${k})`;
   const stroke=flag==='overlap'?'var(--bad)':flag==='out'?'var(--warn)':col;
@@ -536,8 +615,7 @@ function itemSVG(it,s,flag,cflag,selected){
   return g;
 }
 
-function camSVG(c,s,selected,idx){
-  const px=n=>n/s;
+function camSVG(c,s,selected){
   let h=`<g data-id="${c.id}" transform="translate(${c.x} ${c.y}) scale(${1/s})" style="cursor:move">`;
   h+=`<circle r="15" style="fill:var(--floor);stroke:${selected?'var(--accent)':'var(--c-cctv)'}" stroke-width="${selected?3:2}"/>`;
   h+=`<g transform="rotate(${c.fov>=360?0:c.angle})"><rect x="-9" y="-5.5" width="12" height="11" rx="2" style="fill:var(--c-cctv)"/><path d="M3 -3 L10 -7 L10 7 L3 3 Z" style="fill:var(--c-cctv)"/>${c.fov>=360?'<circle cx="0" cy="0" r="3" style="fill:var(--floor)"/>':''}</g>`;
@@ -554,9 +632,9 @@ function fovPath(c){
 }
 
 function buildPlan(v,opt){
-  const o=opt||{}, s=v.s, px=n=>n/s, W=S.shopW, L=S.shopL, ex=!!o.exporting;
-  let h=`<defs><clipPath id="shopClip${ex?'X':''}"><rect x="0" y="0" width="${W}" height="${L}"/></clipPath>`+
-        `<pattern id="hatch${ex?'X':''}" patternUnits="userSpaceOnUse" width="${px(7)}" height="${px(7)}" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="${px(7)}" style="stroke:var(--muted);stroke-opacity:.45" stroke-width="${px(1)}"/></pattern></defs>`;
+  const o=opt||{}, s=v.s, px=n=>n/s, W=S.shopW, L=S.shopL, ex=!!o.exporting, X=ex?'X':'';
+  let h=`<defs><clipPath id="shopClip${X}"><rect x="0" y="0" width="${W}" height="${L}"/></clipPath>`+
+        `<pattern id="hatch${X}" patternUnits="userSpaceOnUse" width="${px(7)}" height="${px(7)}" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="${px(7)}" style="stroke:var(--muted);stroke-opacity:.45" stroke-width="${px(1)}"/></pattern></defs>`;
   h+=`<g transform="translate(${v.tx} ${v.ty}) scale(${s})">`;
   h+=`<rect x="0" y="0" width="${W}" height="${L}" style="fill:var(--floor)"/>`;
 
@@ -570,7 +648,7 @@ function buildPlan(v,opt){
   if(mi) h+=`<path d="${mi}" style="stroke:var(--grid-minor);pointer-events:none" stroke-width="1" ${NS} fill="none"/>`;
   if(ma) h+=`<path d="${ma}" style="stroke:var(--grid-major);pointer-events:none" stroke-width="1" ${NS} fill="none"/>`;
 
-  // zone borders + labels
+  // zone borders
   S.zones.forEach(z=>{
     const zs=sel===z.id&&!ex;
     h+=`<rect x="${z.x}" y="${z.y}" width="${z.w}" height="${z.l}" style="fill:none;stroke:var(--${z.color});pointer-events:none" stroke-width="${zs?2.2:1.3}" stroke-dasharray="${zs?'':'7 4'}" ${NS}/>`;
@@ -580,22 +658,22 @@ function buildPlan(v,opt){
   if(S.showClear){
     solids().forEach(it=>{ const c=clearBox(it); if(!c) return; const bad=A.cflag[it.id];
       h+=`<rect x="${c.x1}" y="${c.y1}" width="${c.x2-c.x1}" height="${c.y2-c.y1}" style="fill:var(--c-${it.kind});fill-opacity:.06;pointer-events:none"/>`;
-      h+=`<rect x="${c.x1}" y="${c.y1}" width="${c.x2-c.x1}" height="${c.y2-c.y1}" style="fill:url(#hatch${ex?'X':''});stroke:${bad?'var(--warn)':'var(--c-'+it.kind+')'};stroke-opacity:${bad?1:.5};pointer-events:none" stroke-width="${bad?1.6:1}" stroke-dasharray="4 3" ${NS}/>`;
+      h+=`<rect x="${c.x1}" y="${c.y1}" width="${c.x2-c.x1}" height="${c.y2-c.y1}" style="fill:url(#hatch${X});stroke:${bad?'var(--warn)':'var(--c-'+it.kind+')'};stroke-opacity:${bad?1:.5};pointer-events:none" stroke-width="${bad?1.6:1}" stroke-dasharray="4 3" ${NS}/>`;
     });
   }
 
   // FOV
   const cams=S.items.filter(isCam);
   if(S.showFov){
-    h+=`<g clip-path="url(#shopClip${ex?'X':''})" style="pointer-events:none">`;
+    h+=`<g clip-path="url(#shopClip${X})" style="pointer-events:none">`;
     cams.forEach(c=>{ h+=fovPath(c)+` style="fill:var(--c-cctv);fill-opacity:${sel===c.id&&!ex?.15:.045};stroke:var(--c-cctv);stroke-opacity:.55" stroke-width="1" stroke-dasharray="5 4" ${NS}/>`; });
     h+='</g>';
   }
 
   // items
-  solids().forEach(it=>{ h+=itemSVG(it,s,A.flags[it.id],A.cflag[it.id],sel===it.id&&!ex); });
+  solids().forEach(it=>{ h+=itemSVG(it,s,A.flags[it.id]); });
 
-  // labels
+  // item labels (ชื่อ + ขนาด cm)
   if(S.showLbl){
     solids().forEach(it=>{
       const cx=it.x+bw(it)/2, cy=it.y+bh(it)/2, sw=bw(it)*s, sh=bh(it)*s;
@@ -603,50 +681,50 @@ function buildPlan(v,opt){
       const fs=Math.min(12,Math.max(8,Math.min(sw,sh)/4.2));
       const showD=sw>=44&&sh>=34;
       h+=`<text x="${cx}" y="${cy-(showD?px(5):0)}" font-size="${px(fs)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font-family:var(--f-ui);font-weight:600;paint-order:stroke;stroke:var(--t-${it.kind});stroke-width:${px(3)};pointer-events:none">${esc(it.name)}</text>`;
-      if(showD) h+=`<text x="${cx}" y="${cy+px(fs*.75)}" font-size="${px(Math.max(8,fs-2.5))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--muted);font-family:var(--f-mono);paint-order:stroke;stroke:var(--t-${it.kind});stroke-width:${px(3)};pointer-events:none">${it.w}×${it.d}</text>`;
+      if(showD) h+=`<text x="${cx}" y="${cy+px(fs*.75)}" font-size="${px(Math.max(8,fs-2.5))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--muted);font-family:var(--f-mono);paint-order:stroke;stroke:var(--t-${it.kind});stroke-width:${px(3)};pointer-events:none">${dimsShort(it.w,it.d)}</text>`;
     });
   }
 
-  // zone labels (drawn above machines, with halo)
+  // zone labels (above machines, with halo)
   S.zones.forEach(z=>{
     if(!(z.w*s>60&&z.l*s>30)) return;
     const halo=`paint-order:stroke;stroke:var(--floor);stroke-width:${px(3.5)};stroke-linejoin:round;pointer-events:none`;
     h+=`<text x="${z.x+z.w/2}" y="${z.y+z.l-px(22)}" font-size="${px(12)}" text-anchor="middle" style="fill:var(--${z.color});font-family:var(--f-ui);font-weight:600;${halo}">${esc(z.name)}</text>`;
-    h+=`<text x="${z.x+z.w/2}" y="${z.y+z.l-px(8)}" font-size="${px(10)}" text-anchor="middle" style="fill:var(--${z.color});font-family:var(--f-mono);${halo}">${(z.w/1000).toFixed(2)} × ${(z.l/1000).toFixed(2)} m = ${m2(z.w*z.l).toFixed(2)} m²</text>`;
+    h+=`<text x="${z.x+z.w/2}" y="${z.y+z.l-px(8)}" font-size="${px(10)}" text-anchor="middle" style="fill:var(--${z.color});font-family:var(--f-mono);${halo}">${dimsShort(z.w,z.l)} cm = ${fmtArea(z.w*z.l)}</text>`;
   });
 
   // walls
   h+=`<rect x="0" y="0" width="${W}" height="${L}" style="fill:none;stroke:var(--wall);pointer-events:none" stroke-width="3.5" ${NS}/>`;
 
-  // rulers (top/left) in metres
+  // rulers (top/left) in cm
   const st=niceStep(s,ex?46:34), fsR=px(10);
-  for(let x=0;x<=W+.1;x+=st){ h+=`<line x1="${x}" y1="${-px(6)}" x2="${x}" y2="0" style="stroke:var(--muted)" stroke-width="1" ${NS}/><text x="${x}" y="${-px(10)}" font-size="${fsR}" text-anchor="middle" style="fill:var(--muted);font-family:var(--f-mono)">${+(x/1000).toFixed(2)}</text>`; }
-  for(let y=0;y<=L+.1;y+=st){ h+=`<line x1="${-px(6)}" y1="${y}" x2="0" y2="${y}" style="stroke:var(--muted)" stroke-width="1" ${NS}/><text x="${-px(9)}" y="${y}" font-size="${fsR}" text-anchor="end" dominant-baseline="central" style="fill:var(--muted);font-family:var(--f-mono)">${+(y/1000).toFixed(2)}</text>`; }
-  h+=`<text x="${-px(9)}" y="${-px(10)}" font-size="${fsR}" text-anchor="end" style="fill:var(--muted);font-family:var(--f-mono)">m</text>`;
+  for(let x=0;x<=W+.1;x+=st){ h+=`<line x1="${x}" y1="${-px(6)}" x2="${x}" y2="0" style="stroke:var(--muted)" stroke-width="1" ${NS}/><text x="${x}" y="${-px(10)}" font-size="${fsR}" text-anchor="middle" style="fill:var(--muted);font-family:var(--f-mono)">${fmtLen(x,false)}</text>`; }
+  for(let y=0;y<=L+.1;y+=st){ h+=`<line x1="${-px(6)}" y1="${y}" x2="0" y2="${y}" style="stroke:var(--muted)" stroke-width="1" ${NS}/><text x="${-px(9)}" y="${y}" font-size="${fsR}" text-anchor="end" dominant-baseline="central" style="fill:var(--muted);font-family:var(--f-mono)">${fmtLen(y,false)}</text>`; }
+  h+=`<text x="${-px(9)}" y="${-px(10)}" font-size="${fsR}" text-anchor="end" style="fill:var(--muted);font-family:var(--f-mono)">cm</text>`;
 
   // overall dims (bottom/right)
-  h+=dimLine(0,L+px(26),W,L+px(26),`กว้าง ${(W/1000).toFixed(2)} m`,s,'var(--ink)');
-  h+=dimLine(W+px(26),0,W+px(26),L,`ลึก ${(L/1000).toFixed(2)} m`,s,'var(--ink)',false,true);
+  h+=dimLine(0,L+px(26),W,L+px(26),`กว้าง ${fmtLen(W)}`,s,'var(--ink)');
+  h+=dimLine(W+px(26),0,W+px(26),L,`ลึก ${fmtLen(L)}`,s,'var(--ink)',false,true);
 
   // gap dims
   if(S.showAll){
     solids().forEach(it=>{ gapsOf(it).forEach(gp=>{
       if(gp.len<=.5) return; if((gp.dir==='l'||gp.dir==='u')&&!gp.wall) return;
-      h+=dimLine(gp.x1,gp.y1,gp.x2,gp.y2,fmt(gp.len),s,'var(--dim)',true);
+      h+=dimLine(gp.x1,gp.y1,gp.x2,gp.y2,fmtLen(gp.len),s,'var(--dim)',true);
     }); });
   }
   const so=!ex&&sel?findAny(sel):null;
   if(so&&!isZone(so)&&!isCam(so)){
     const b=box(so);
     h+=`<rect x="${b.x1-px(4)}" y="${b.y1-px(4)}" width="${b.x2-b.x1+px(8)}" height="${b.y2-b.y1+px(8)}" style="fill:none;stroke:var(--accent);pointer-events:none" stroke-width="1.6" stroke-dasharray="5 3" ${NS}/>`;
-    if(!S.showAll) gapsOf(so).forEach(gp=>{ if(gp.len>.5) h+=dimLine(gp.x1,gp.y1,gp.x2,gp.y2,fmt(gp.len),s,'var(--dim)'); });
+    if(!S.showAll) gapsOf(so).forEach(gp=>{ if(gp.len>.5) h+=dimLine(gp.x1,gp.y1,gp.x2,gp.y2,fmtLen(gp.len),s,'var(--dim)'); });
   }
   if(so&&isZone(so)&&!so.locked){
     h+=`<rect data-id="${so.id}" data-handle="resize" x="${so.x+so.w-px(7)}" y="${so.y+so.l-px(7)}" width="${px(14)}" height="${px(14)}" rx="${px(3)}" style="fill:var(--accent);stroke:var(--floor);cursor:nwse-resize" stroke-width="2" ${NS}/>`;
   }
 
   // cameras
-  cams.forEach((c,i)=>{ h+=camSVG(c,s,sel===c.id&&!ex,i); });
+  cams.forEach(c=>{ h+=camSVG(c,s,sel===c.id&&!ex); });
   if(so&&isCam(so)&&so.fov<360){
     const a=so.angle*Math.PI/180, hx=so.x+so.range*Math.cos(a), hy=so.y+so.range*Math.sin(a);
     h+=`<line x1="${so.x}" y1="${so.y}" x2="${hx}" y2="${hy}" style="stroke:var(--accent);pointer-events:none" stroke-width="1" stroke-dasharray="3 3" ${NS}/>`;
@@ -656,7 +734,7 @@ function buildPlan(v,opt){
   // measure
   if(measure&&!ex){
     const len=Math.hypot(measure.b.x-measure.a.x,measure.b.y-measure.a.y);
-    if(len>1) h+=dimLine(measure.a.x,measure.a.y,measure.b.x,measure.b.y,`${fmt(len)} mm`,s,'var(--bad)');
+    if(len>.5) h+=dimLine(measure.a.x,measure.a.y,measure.b.x,measure.b.y,fmtLen(len),s,'var(--bad)');
   }
   h+='</g>';
   return h;
@@ -666,21 +744,22 @@ function scaleBar(cw,ch){
   const s=view.s, len=niceStep(s,90), w=len*s, x=16, y=ch-18;
   return `<g style="pointer-events:none"><rect x="${x-6}" y="${y-20}" width="${w+12}" height="30" rx="5" style="fill:var(--panel);fill-opacity:.9"/>`+
     `<rect x="${x}" y="${y}" width="${w/2}" height="5" style="fill:var(--ink)"/><rect x="${x+w/2}" y="${y}" width="${w/2}" height="5" style="fill:var(--floor);stroke:var(--ink)" stroke-width="1"/>`+
-    `<text x="${x}" y="${y-6}" font-size="10.5" style="fill:var(--ink);font-family:var(--f-mono)">0</text><text x="${x+w}" y="${y-6}" font-size="10.5" text-anchor="end" style="fill:var(--ink);font-family:var(--f-mono)">${len>=1000?(len/1000)+' m':len+' mm'}</text></g>`;
+    `<text x="${x}" y="${y-6}" font-size="10.5" style="fill:var(--ink);font-family:var(--f-mono)">0</text><text x="${x+w}" y="${y-6}" font-size="10.5" text-anchor="end" style="fill:var(--ink);font-family:var(--f-mono)">${fmtLen(len)}</text></g>`;
 }
 
 function renderPlan(){
   A=analyze();
   const cw=svg.clientWidth, ch=svg.clientHeight;
   svg.innerHTML=buildPlan(view,{})+scaleBar(cw,ch);
-  $('#stScale').textContent=`1 px = ${(1/view.s).toFixed(1)} mm`;
+  const mmpx=1/view.s;
+  $('#stScale').textContent=`1 px = ${mmpx>=10?(mmpx/10).toFixed(2)+' cm':mmpx.toFixed(1)+' mm'}`;
 }
 
 /* =========================================================
    5) Library panel
    ========================================================= */
 function presetBtn(p){
-  const dims=p.kind==='cctv'?`FOV ${p.fov}° · ระยะ ${p.range/1000} m`:`${fmt(p.w)} × ${fmt(p.d)}${p.h?` × ${fmt(p.h)}`:''} mm`;
+  const dims=p.kind==='cctv'?`FOV ${p.fov}° · ระยะ ${fmtLen(p.range)}`:fmtDims(p.w,p.d,p.h);
   const meta=p.kind==='cctv'?'มุมมอง/ระยะปรับได้':`${p.cap?esc(p.cap)+' · ':''}${KIND[p.kind].label.split(' ')[0]}<span class="src ${p.src}">${SRC[p.src]}</span>`;
   return `<button type="button" class="preset" data-p="${p.id}" title="เพิ่ม ${esc(p.name)}"><span class="dot" style="background:var(--c-${p.kind})"></span><span class="pn">${esc(p.name)}<small>${esc(p.model)}</small></span><span class="padd" aria-hidden="true">+</span><span class="pd mono">${dims}</span><span class="pm">${meta}</span></button>`;
 }
@@ -695,17 +774,17 @@ function renderLibrary(){
     <label class="full">ประเภท<select id="cKind">${KORDER.filter(k=>k!=='cctv').map(k=>`<option value="${k}">${KIND[k].label}</option>`).join('')}</select></label>
     <label>ยี่ห้อ<input id="cBrand" value="Speed Queen"></label>
     <label>รุ่น<input id="cModel" value=""></label>
-    <label>กว้าง W (mm)<input id="cW" type="number" min="10" value="700"></label>
-    <label>ลึก D (mm)<input id="cD" type="number" min="10" value="800"></label>
-    <label>สูง H (mm)<input id="cH" type="number" min="0" value="1000"></label>
+    <label>กว้าง W (cm)<input id="cW" type="number" min="1" step="any" value="70"></label>
+    <label>ลึก D (cm)<input id="cD" type="number" min="1" step="any" value="80"></label>
+    <label>สูง H (cm)<input id="cH" type="number" min="0" step="any" value="100"></label>
     <label>จำนวนถัง/ช่อง<input id="cU" type="number" min="1" value="1"></label>
-    <label class="full">พื้นที่ว่างหน้าเครื่อง (mm)<input id="cC" type="number" min="0" step="50" value="900"></label>
+    <label class="full">พื้นที่ว่างหน้าเครื่อง (cm)<input id="cC" type="number" min="0" step="any" value="90"></label>
     <button type="button" class="btn full" id="cAdd">+ เพิ่มลงแบบ</button>
-  </div><p class="note">ใช้จำนวน / ระยะห่าง / ทิศหน้าเครื่อง จากแถบด้านบนของคลัง</p></div></details>`;
+  </div><p class="note">ใส่ค่าเป็น cm ได้ทศนิยม 1 ตำแหน่ง (0.1 cm = 1 mm) · ใช้จำนวน / ระยะห่าง / ทิศหน้าเครื่อง จากแถบด้านบนของคลัง</p></div></details>`;
   h+=`<details class="sec" open><summary>พื้นที่ภายในร้าน (โซน)</summary><div class="sec-b"><div class="form">
     <label class="full">ชื่อโซน<input id="zName" value="โซนใหม่"></label>
-    <label>กว้าง (m)<input id="zW" type="number" step="0.05" min="0.1" value="3"></label>
-    <label>ยาว (m)<input id="zL" type="number" step="0.05" min="0.1" value="2"></label>
+    <label>กว้าง (cm)<input id="zW" type="number" step="any" min="10" value="300"></label>
+    <label>ยาว (cm)<input id="zL" type="number" step="any" min="10" value="200"></label>
     <button type="button" class="btn full" id="zAdd">+ เพิ่มโซน</button>
   </div><p class="note">โซนใหม่จะถูกวางที่มุมซ้ายบนและยังไม่ล็อก ลากย้าย / ลากมุมขวาล่างเพื่อปรับขนาด แล้วกดล็อกเมื่อจัดเสร็จ</p></div></details>`;
   h+=`<div class="sec-b" style="padding-top:12px"><p class="note"><b>ขนาดเครื่อง</b>: <span class="src spec">Spec sheet</span> = เอกสารผู้ผลิต, <span class="src retail">ตัวแทน/ร้านค้า</span> = ข้อมูลผู้จำหน่าย, <span class="src approx">ค่าประมาณ</span> = ขนาดทั่วไป ทุกค่าแก้ไขได้ในช่องรายละเอียด ควรยืนยัน Spec ของรุ่นที่สั่งจริง (รวมระยะท่อน้ำทิ้ง/ท่อไอร้อนด้านหลัง) ก่อนติดตั้ง</p></div>`;
@@ -725,8 +804,9 @@ function freeCamSpot(){
   for(const [x,y,a] of spots) if(!cams.some(c=>Math.hypot(c.x-x,c.y-y)<300)) return {x,y,a};
   return {x:W/2,y:L/2,a:0};
 }
+function gapMM(){ const v=parseFloat($('#aGap').value); return isFinite(v)?Math.max(0,mmFromCm(v)):0; }
 function addFromPreset(p){
-  const qty=clamp(parseInt($('#aQty').value)||1,1,40), gap=Math.max(0,parseFloat($('#aGap').value)||0);
+  const qty=clamp(parseInt($('#aQty').value)||1,1,40), gap=gapMM();
   const dir=$('#aDir').value, rot=+$('#aRot').value;
   mutate(()=>{
     const made=[];
@@ -745,31 +825,35 @@ function addFromPreset(p){
 /* =========================================================
    6) Inspector
    ========================================================= */
+// o.cm → ช่องกรอกหน่วย cm (เก็บเป็น mm), o.suf → หน่วยคงที่
 function fld(label,f,val,o){
-  o=o||{}; const type=o.type||'number', sc=o.scale||1, full=o.full?' full':'';
-  const v=type==='number'?+(val/sc).toFixed(sc===1?0:3):esc(val);
-  return `<label class="fld${full}"><span>${label}</span><span class="in"><input id="f-${f}" data-f="${f}" data-scale="${sc}" type="${type}" ${type==='number'?`step="${o.step||1}" inputmode="decimal"`:''} value="${v}">${o.suf?`<em>${o.suf}</em>`:''}</span></label>`;
+  o=o||{}; const type=o.type||'number', full=o.full?' full':'';
+  const sc=o.cm?10:1;
+  const v=type==='number'?(o.cm?cmVal(val):+(+val).toFixed(0)):esc(val);
+  const suf=o.cm?'cm':(o.suf||'');
+  const hint=o.cm?unitHint(val):'';
+  return `<label class="fld${full}"><span>${label}</span><span class="in"><input id="f-${f}" data-f="${f}" data-scale="${sc}" type="${type}" ${type==='number'?`step="any" inputmode="decimal"`:''} value="${v}">${suf?`<em class="${hint?'mmx':''}">${suf}${hint?' '+hint:''}</em>`:''}</span></label>`;
 }
 function renderInspector(){
   const box_=$('#inspector'); const o=sel?findAny(sel):null;
   if(!o){
-    box_.innerHTML=`<p class="empty">คลิกเครื่อง โซน หรือกล้องในแบบเพื่อแก้ไขชื่อ ขนาด ตำแหน่ง และทิศทาง<br>เพิ่มเครื่องจากคลังด้านซ้าย</p>
-    <div class="keys"><kbd>R</kbd><span>หมุน 90° (กล้อง +15°)</span><kbd>Del</kbd><span>ลบ</span><kbd>Ctrl+D</kbd><span>ทำสำเนา</span><kbd>← ↑ → ↓</kbd><span>ขยับทีละ snap (Shift ×10)</span><kbd>M</kbd><span>วัดระยะ</span><kbd>Ctrl+Z</kbd><span>ย้อนกลับ</span></div>`;
+    box_.innerHTML=`<p class="empty">คลิกเครื่อง โซน หรือกล้องในแบบเพื่อแก้ไขชื่อ ขนาด ตำแหน่ง และทิศทาง<br>เพิ่มเครื่องจากคลังด้านซ้าย · ขนาดและตำแหน่งกรอกเป็น cm (ทศนิยม 0.1 cm = 1 mm)</p>
+    <div class="keys"><kbd>Ctrl+S</kbd><span>บันทึกโปรเจค</span><kbd>R</kbd><span>หมุน 90° (กล้อง +15°)</span><kbd>Del</kbd><span>ลบ</span><kbd>Ctrl+D</kbd><span>ทำสำเนา</span><kbd>← ↑ → ↓</kbd><span>ขยับทีละ snap (Shift ×10)</span><kbd>M</kbd><span>วัดระยะ</span><kbd>Ctrl+Z</kbd><span>ย้อนกลับ</span></div>`;
     return;
   }
   let h='';
   if(isZone(o)){
     h+=`<div class="insp-h"><span class="dot" style="background:var(--${o.color})"></span><span class="k">พื้นที่ภายในร้าน (โซน)</span></div>`;
-    h+=`<div class="fgrid">${fld('ชื่อโซน','name',o.name,{type:'text',full:1})}${fld('กว้าง','w',o.w,{scale:1000,step:.05,suf:'m'})}${fld('ยาว','l',o.l,{scale:1000,step:.05,suf:'m'})}${fld('ห่างผนังซ้าย','x',o.x,{scale:1000,step:.05,suf:'m'})}${fld('ห่างผนังบน','y',o.y,{scale:1000,step:.05,suf:'m'})}</div>`;
-    h+=`<div class="readout" id="ro">พื้นที่ ${m2(o.w*o.l).toFixed(2)} m²</div>`;
+    h+=`<div class="fgrid">${fld('ชื่อโซน','name',o.name,{type:'text',full:1})}${fld('กว้าง','w',o.w,{cm:1})}${fld('ยาว','l',o.l,{cm:1})}${fld('ห่างผนังซ้าย','x',o.x,{cm:1})}${fld('ห่างผนังบน','y',o.y,{cm:1})}</div>`;
+    h+=`<div class="readout" id="ro"></div>`;
     h+=`<div class="swatches">${ZCOL.map(c=>`<button type="button" class="sw ${o.color===c?'on':''}" data-act="color" data-v="${c}" style="background:var(--${c})" aria-label="สี ${c}"></button>`).join('')}</div>`;
     h+=`<div class="seg"><button type="button" class="btn ${o.locked?'on':''}" data-act="lock">${o.locked?'ล็อกอยู่ (คลิกเพื่อปลด)':'ล็อกตำแหน่ง'}</button><button type="button" class="btn danger" data-act="del">ลบโซน</button></div>`;
   }else if(isCam(o)){
     h+=`<div class="insp-h"><span class="dot" style="background:var(--c-cctv)"></span><span class="k">กล้องวงจรปิด CCTV</span></div>`;
     h+=`<div class="fgrid">${fld('ชื่อ / รหัสกล้อง','name',o.name,{type:'text'})}${fld('ชนิด / เลนส์','model',o.model,{type:'text'})}
-      ${fld('ห่างผนังซ้าย','x',o.x,{suf:'mm',step:50})}${fld('ห่างผนังบน','y',o.y,{suf:'mm',step:50})}
-      ${fld('ทิศทาง (0°=ขวา, 90°=ลง)','angle',o.angle,{suf:'°',step:5})}${fld('มุมมอง FOV','fov',o.fov,{suf:'°',step:5})}
-      ${fld('ระยะมองเห็น','range',o.range,{scale:1000,step:.5,suf:'m'})}${fld('ความสูงติดตั้ง','mountH',o.mountH||0,{scale:1000,step:.1,suf:'m'})}</div>`;
+      ${fld('ห่างผนังซ้าย','x',o.x,{cm:1})}${fld('ห่างผนังบน','y',o.y,{cm:1})}
+      ${fld('ทิศทาง (0°=ขวา, 90°=ลง)','angle',o.angle,{suf:'°'})}${fld('มุมมอง FOV','fov',o.fov,{suf:'°'})}
+      ${fld('ระยะมองเห็น','range',o.range,{cm:1})}${fld('ความสูงติดตั้ง','mountH',o.mountH||0,{cm:1})}</div>`;
     h+=`<p class="note">ลากจุดสีที่ปลายเส้นทิศทางเพื่อหมุนกล้องและปรับระยะ · มุมมองถูกตัดที่ผนังร้าน</p>`;
     h+=`<div class="seg"><button type="button" class="btn" data-act="dup">ทำสำเนา</button><button type="button" class="btn danger" data-act="del">ลบกล้อง</button></div>`;
   }else{
@@ -777,10 +861,10 @@ function renderInspector(){
     h+=`<div class="fgrid">${fld('ชื่อ / เลขเครื่อง','name',o.name,{type:'text'})}
       <label class="fld"><span>ประเภท</span><span class="in"><select id="f-kind" data-f="kind">${KORDER.filter(k=>k!=='cctv').map(k=>`<option value="${k}" ${o.kind===k?'selected':''}>${KIND[k].label}</option>`).join('')}</select></span></label>
       ${fld('ยี่ห้อ','brand',o.brand,{type:'text'})}${fld('รุ่น','model',o.model,{type:'text'})}
-      ${fld('กว้าง W','w',o.w,{suf:'mm'})}${fld('ลึก D','d',o.d,{suf:'mm'})}
-      ${fld('สูง H','h',o.h||0,{suf:'mm'})}${fld('จำนวนถัง/ช่อง','units',o.units||1,{})}
-      ${fld('ห่างผนังซ้าย','x',o.x,{suf:'mm',step:10})}${fld('ห่างผนังบน','y',o.y,{suf:'mm',step:10})}
-      ${fld('พื้นที่ว่างหน้าเครื่อง','clear',o.clear||0,{suf:'mm',step:50,full:1})}</div>`;
+      ${fld('กว้าง W','w',o.w,{cm:1})}${fld('ลึก D','d',o.d,{cm:1})}
+      ${fld('สูง H','h',o.h||0,{cm:1})}${fld('จำนวนถัง/ช่อง','units',o.units||1,{})}
+      ${fld('ห่างผนังซ้าย','x',o.x,{cm:1})}${fld('ห่างผนังบน','y',o.y,{cm:1})}
+      ${fld('พื้นที่ว่างหน้าเครื่อง','clear',o.clear||0,{cm:1,full:1})}</div>`;
     h+=`<div class="fld"><span>หน้าเครื่องหันไปทาง</span><div class="seg">${[0,90,180,270].map(r=>`<button type="button" class="btn ${o.rot===r?'on':''}" data-act="rot" data-v="${r}">${DIRS[r]}</button>`).join('')}</div></div>`;
     h+=`<div class="readout" id="ro"></div>`;
     h+=`<div class="seg"><button type="button" class="btn" data-act="dup">ทำสำเนา</button><button type="button" class="btn danger" data-act="del">ลบ</button></div>`;
@@ -790,18 +874,22 @@ function renderInspector(){
 }
 function updateReadout(){
   const o=sel?findAny(sel):null, ro=$('#ro'); if(!o||!ro) return;
-  if(isZone(o)){ ro.textContent=`พื้นที่ ${m2(o.w*o.l).toFixed(2)} m²`; return; }
+  if(isZone(o)){ ro.textContent=`${fmtDims(o.w,o.l)} · พื้นที่ ${fmtArea(o.w*o.l)}`; return; }
   if(isCam(o)) return;
   const g=gapsOf(o), by=d=>g.find(x=>x.dir===d);
-  const t=gp=>gp.len<-.5?'ทับ':fmt(Math.max(0,gp.len));
-  ro.innerHTML=`ระยะห่าง (mm) ← ${t(by('l'))} · → ${t(by('r'))} · ↑ ${t(by('u'))} · ↓ ${t(by('d'))}<br>Footprint ${m2(bw(o)*bh(o)).toFixed(2)} m²${o.cap?` · ${esc(o.cap)}`:''}`;
+  const t=gp=>gp.len<-.5?'ทับ':fmtLen(Math.max(0,gp.len));
+  ro.innerHTML=`ระยะห่าง ← ${t(by('l'))} · → ${t(by('r'))} · ↑ ${t(by('u'))} · ↓ ${t(by('d'))}<br>ขนาด ${fmtDims(o.w,o.d,o.h)} · Footprint ${fmtArea(bw(o)*bh(o))}${o.cap?` · ${esc(o.cap)}`:''}`;
+}
+function setUnitSuffix(input,mm){
+  const em=input&&input.nextElementSibling; if(!em||em.tagName!=='EM'||input.dataset.scale!=='10') return;
+  const hnt=unitHint(mm); em.textContent='cm'+(hnt?' '+hnt:''); em.classList.toggle('mmx',!!hnt);
 }
 function syncInspectorPos(){
   const o=sel?findAny(sel):null; if(!o) return;
-  const set=(f,v)=>{const el=$('#f-'+f); if(el&&document.activeElement!==el) el.value=v;};
-  if(isZone(o)){ set('x',+(o.x/1000).toFixed(3)); set('y',+(o.y/1000).toFixed(3)); set('w',+(o.w/1000).toFixed(3)); set('l',+(o.l/1000).toFixed(3)); }
-  else if(isCam(o)){ set('x',r1(o.x)); set('y',r1(o.y)); set('angle',r1(o.angle)); set('range',+(o.range/1000).toFixed(3)); }
-  else { set('x',r1(o.x)); set('y',r1(o.y)); }
+  const set=(f,mm)=>{const el=$('#f-'+f); if(el&&document.activeElement!==el){ el.value=el.dataset.scale==='10'?cmVal(mm):r1(mm); setUnitSuffix(el,mm); }};
+  if(isZone(o)){ set('x',o.x); set('y',o.y); set('w',o.w); set('l',o.l); }
+  else if(isCam(o)){ set('x',o.x); set('y',o.y); set('angle',o.angle); set('range',o.range); }
+  else { set('x',o.x); set('y',o.y); }
   updateReadout();
 }
 function onField(e){
@@ -815,6 +903,7 @@ function onField(e){
     if(f==='range') v=Math.max(100,v);
     if(f==='angle') v=((v%360)+360)%360;
     o[f]=Math.round(v);
+    setUnitSuffix(t,o[f]);
   }else{
     o[f]=t.value;
     if(f==='kind') { save(); renderAll(); return; }
@@ -837,17 +926,22 @@ function setRot(o,r){ const cx=o.x+bw(o)/2, cy=o.y+bh(o)/2; o.rot=r; o.x=r1(cx-b
 /* =========================================================
    7) Summary / schedule
    ========================================================= */
+function countsOf(st){
+  const c={washer:0,dryer:0,stack:0,coin:0,furn:0,cctv:0}; let pockets=0;
+  st.items.forEach(i=>{ if(c[i.kind]!==undefined) c[i.kind]++; if(['washer','dryer','stack'].includes(i.kind)) pockets+=(+i.units||1); });
+  return {c,pockets};
+}
 function renderSummary(){
   const it=S.items, by={}; KORDER.forEach(k=>by[k]=[]); it.forEach(i=>(by[i.kind]||by.furn).push(i));
   const mach=by.washer.length+by.dryer.length+by.stack.length;
-  const pockets=[...by.washer,...by.dryer,...by.stack].reduce((a,i)=>a+(+i.units||1),0);
+  const pockets=countsOf(S).pockets;
   const shopA=S.shopW*S.shopL, foot=solids().reduce((a,i)=>a+bw(i)*bh(i),0);
   const clr=solids().reduce((a,i)=>{const c=clearBox(i); return a+(c?(c.x2-c.x1)*(c.y2-c.y1):0);},0);
   let h=`<div class="kpis">
     <div class="kpi"><div class="v">${mach}</div><div class="l">เครื่องซัก / อบ / Stack (ตัว)</div></div>
     <div class="kpi"><div class="v">${pockets}</div><div class="l">ถังบริการลูกค้า (ช่อง)</div></div>
     <div class="kpi"><div class="v">${by.cctv.length}</div><div class="l">กล้องวงจรปิด (จุด)</div></div>
-    <div class="kpi"><div class="v">${(foot/shopA*100).toFixed(1)}%</div><div class="l">พื้นที่ฐานวัตถุ ${m2(foot).toFixed(2)} / ${m2(shopA).toFixed(2)} m²</div></div>
+    <div class="kpi"><div class="v">${(foot/shopA*100).toFixed(1)}%</div><div class="l">พื้นที่ฐานวัตถุ ${fmtArea(foot)} / ${fmtArea(shopA)}</div></div>
   </div>`;
   h+=`<table class="tbl"><thead><tr><th>ประเภท / รุ่น</th><th class="n">จำนวน</th><th class="n">ถัง</th></tr></thead><tbody>`;
   KORDER.forEach(k=>{
@@ -860,12 +954,12 @@ function renderSummary(){
 
   // zones
   const zA=S.zones.reduce((a,z)=>a+z.w*z.l,0);
-  h+=`<div class="eyebrow" style="margin-top:6px">พื้นที่ภายในร้าน</div><table class="tbl"><thead><tr><th>โซน</th><th class="n">กว้าง×ยาว (m)</th><th class="n">m²</th></tr></thead><tbody>`;
-  S.zones.forEach(z=>{ h+=`<tr data-sel="${z.id}" style="cursor:pointer"><td><span class="kcell"><span class="dot" style="background:var(--${z.color})"></span>${esc(z.name)}</span></td><td class="n">${(z.w/1000).toFixed(2)}×${(z.l/1000).toFixed(2)}</td><td class="n">${m2(z.w*z.l).toFixed(2)}</td></tr>`; });
-  h+=`<tr class="sub"><td>รวมพื้นที่โซน</td><td class="n"></td><td class="n">${m2(zA).toFixed(2)}</td></tr>`;
-  h+=`<tr class="sub"><td>พื้นที่ร้านทั้งหมด</td><td class="n">${(S.shopW/1000).toFixed(2)}×${(S.shopL/1000).toFixed(2)}</td><td class="n">${m2(shopA).toFixed(2)}</td></tr>`;
-  h+=`<tr class="sub"><td>ยังไม่กำหนดโซน</td><td class="n"></td><td class="n">${m2(shopA-zA).toFixed(2)}</td></tr>`;
-  h+=`<tr class="sub"><td>พื้นที่ว่างหน้าเครื่อง (รวม, อาจซ้อนกัน)</td><td class="n"></td><td class="n">${m2(clr).toFixed(2)}</td></tr></tbody></table>`;
+  h+=`<div class="eyebrow" style="margin-top:6px">พื้นที่ภายในร้าน</div><table class="tbl"><thead><tr><th>โซน</th><th class="n">กว้าง×ยาว (cm)</th><th class="n">m²</th></tr></thead><tbody>`;
+  S.zones.forEach(z=>{ h+=`<tr data-sel="${z.id}" style="cursor:pointer"><td><span class="kcell"><span class="dot" style="background:var(--${z.color})"></span>${esc(z.name)}</span></td><td class="n">${dimsShort(z.w,z.l)}</td><td class="n">${(z.w*z.l/1e6).toFixed(2)}</td></tr>`; });
+  h+=`<tr class="sub"><td>รวมพื้นที่โซน</td><td class="n"></td><td class="n">${(zA/1e6).toFixed(2)}</td></tr>`;
+  h+=`<tr class="sub"><td>พื้นที่ร้านทั้งหมด</td><td class="n">${dimsShort(S.shopW,S.shopL)}</td><td class="n">${(shopA/1e6).toFixed(2)}</td></tr>`;
+  h+=`<tr class="sub"><td>ยังไม่กำหนดโซน</td><td class="n"></td><td class="n">${((shopA-zA)/1e6).toFixed(2)}</td></tr>`;
+  h+=`<tr class="sub"><td>พื้นที่ว่างหน้าเครื่อง (รวม, อาจซ้อนกัน)</td><td class="n"></td><td class="n">${(clr/1e6).toFixed(2)}</td></tr></tbody></table>`;
 
   // issues
   h+=`<div class="eyebrow" style="margin-top:6px">ตรวจสอบการจัดวาง</div><ul class="issues">`;
@@ -878,7 +972,7 @@ function renderSummary(){
   KORDER.forEach(k=>{ if(!by[k].length) return;
     h+=`<div class="ogroup">${KIND[k].label} (${by[k].length})</div><ul class="olist">`;
     by[k].slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'th',{numeric:true})).forEach(i=>{
-      h+=`<li data-sel="${i.id}" class="${sel===i.id?'on':''}"><span class="dot" style="background:var(--c-${k})"></span>${esc(i.name)}<span class="m">${isCam(i)?`${i.fov}° · ${(i.range/1000).toFixed(1)} m`:`${bw(i)}×${bh(i)}`}</span></li>`;
+      h+=`<li data-sel="${i.id}" class="${sel===i.id?'on':''}"><span class="dot" style="background:var(--c-${k})"></span>${esc(i.name)}<span class="m">${isCam(i)?`${i.fov}° · ${fmtLen(i.range)}`:dimsShort(bw(i),bh(i))}</span></li>`;
     });
     h+='</ul>';
   });
@@ -892,10 +986,10 @@ function renderAll(){ renderPlan(); renderSummary(); renderInspector(); updUndo(
    8) Header sync
    ========================================================= */
 function syncHeader(){
-  $('#planName').value=S.name||'';
-  $('#shopW').value=+(S.shopW/1000).toFixed(3);
-  $('#shopL').value=+(S.shopL/1000).toFixed(3);
-  $('#shopArea').textContent=`${m2(S.shopW*S.shopL).toFixed(2)} m²`;
+  if(document.activeElement!==$('#planName')) $('#planName').value=S.name||'';
+  $('#shopW').value=cmVal(S.shopW);
+  $('#shopL').value=cmVal(S.shopL);
+  $('#shopArea').textContent=fmtArea(S.shopW*S.shopL);
   $('#gridSel').value=String(S.grid); $('#snapSel').value=String(S.snap);
   $('#oClear').checked=!!S.showClear; $('#oFov').checked=!!S.showFov; $('#oAll').checked=!!S.showAll; $('#oMag').checked=!!S.magnet; $('#oLbl').checked=!!S.showLbl;
 }
@@ -905,7 +999,7 @@ function syncHeader(){
    ========================================================= */
 function fit(){
   const cw=svg.clientWidth, ch=svg.clientHeight; if(!cw||!ch) return;
-  const padL=52, padT=34, padR=96, padB=64;
+  const padL=56, padT=34, padR=104, padB=64;
   const s=Math.min((cw-padL-padR)/S.shopW,(ch-padT-padB)/S.shopL);
   view.s=clamp(s,.004,3);
   view.tx=padL+((cw-padL-padR)-S.shopW*view.s)/2;
@@ -943,13 +1037,12 @@ svg.addEventListener('pointerdown',e=>{
     pinch={d:Math.hypot(a.x-b.x,a.y-b.y),s:view.s}; drag=null; return;
   }
   const w=toWorld(e);
-  if(mode==='measure'||e.button===1){
-    if(e.button===1){ drag={type:'pan',sx:e.clientX,sy:e.clientY,tx:view.tx,ty:view.ty}; svg.classList.add('panning'); return; }
-    const p={x:snapV(w.x),y:snapV(w.y)}; measure={a:p,b:{...p}}; drag={type:'measure'}; renderPlan(); return;
-  }
+  if(e.button===1){ drag={type:'pan',sx:e.clientX,sy:e.clientY,tx:view.tx,ty:view.ty}; svg.classList.add('panning'); return; }
+  if(mode==='measure'){ const p={x:snapV(w.x),y:snapV(w.y)}; measure={a:p,b:{...p}}; drag={type:'measure'}; renderPlan(); return; }
   const t=e.target.closest('[data-id]');
   if(t){
     const id=t.dataset.id, hd=t.dataset.handle, o=findAny(id);
+    if(!o){ return; }
     const changed=sel!==id; sel=id;
     const before=snapStr();
     if(hd==='aim') drag={type:'aim',o,snap:before};
@@ -966,8 +1059,8 @@ svg.addEventListener('pointerdown',e=>{
 
 svg.addEventListener('pointermove',e=>{
   if(pointers.has(e.pointerId)) pointers.set(e.pointerId,local(e));
-  const w=toWorld(e); hoverW=w;
-  $('#stPos').textContent=`X ${(w.x/1000).toFixed(3)} m · Y ${(w.y/1000).toFixed(3)} m`;
+  const w=toWorld(e);
+  $('#stPos').textContent=`X ${fmtLen(w.x)} · Y ${fmtLen(w.y)}`;
   if(pinch&&pointers.size===2){
     const [a,b]=[...pointers.values()], d=Math.hypot(a.x-b.x,a.y-b.y);
     zoomAt((a.x+b.x)/2,(a.y+b.y)/2,(pinch.s*d/pinch.d)/view.s); return;
@@ -1015,7 +1108,7 @@ function delSel(){ const o=sel?findAny(sel):null; if(!o) return; const n=o.name;
 function dupSel(){
   const o=sel?findAny(sel):null; if(!o||isZone(o)) return;
   mutate(()=>{
-    const c=JSON.parse(JSON.stringify(o)); c.id=uid();
+    const c=clone(o); c.id=uid();
     if(isCam(c)){ c.name=nextName('cctv',S.items); c.x+=400; c.y+=400; }
     else{
       c.name=c.kind==='furn'?baseName(c.name.replace(/ \d+$/,''),S.items):nextName(c.kind,S.items);
@@ -1042,10 +1135,11 @@ function setMode(m){
 
 document.addEventListener('keydown',e=>{
   const tag=(e.target.tagName||'').toLowerCase(), typing=tag==='input'||tag==='textarea'||tag==='select';
+  const mod=e.ctrlKey||e.metaKey;
+  if(mod&&e.key.toLowerCase()==='s'){ e.preventDefault(); if(typing&&e.target.id==='planName') commitName(); saveProject({}); return; }
   if(!$('#modal').hidden){ if(e.key==='Escape') closeModal(); return; }
   if(e.key==='Escape'){ if(typing){ e.target.blur(); return; } if(mode==='measure') setMode('select'); else if(sel){ sel=null; renderAll(); } return; }
   if(typing) return;
-  const mod=e.ctrlKey||e.metaKey;
   if(mod&&e.key.toLowerCase()==='z'){ e.preventDefault(); e.shiftKey?redo():undo(); return; }
   if(mod&&e.key.toLowerCase()==='y'){ e.preventDefault(); redo(); return; }
   if(mod&&e.key.toLowerCase()==='d'){ e.preventDefault(); dupSel(); return; }
@@ -1061,41 +1155,508 @@ document.addEventListener('keydown',e=>{
 });
 
 /* =========================================================
-   12) Modal / export / import
+   12) Modal / toast
    ========================================================= */
-function openModal(title,body,foot){ $('#mTitle').textContent=title; $('#mBody').innerHTML=body; $('#mFoot').innerHTML=foot; $('#modal').hidden=false; }
-function closeModal(){ $('#modal').hidden=true; $('#mBody').innerHTML=''; }
+let modalKind=null;
+function openModal(title,body,foot,kind){ modalKind=kind||null; $('#mTitle').textContent=title; $('#mBody').innerHTML=body; $('#mFoot').innerHTML=foot; $('#modal').hidden=false; }
+function closeModal(){ $('#modal').hidden=true; $('#mBody').innerHTML=''; $('#mFoot').innerHTML=''; modalKind=null; }
 $('#modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal(); });
 let toastT=null;
-function toast(t){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>el.hidden=true,1800); }
+function toast(t,ms){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>el.hidden=true,ms||2000); }
+
+/* =========================================================
+   13) Project storage
+   - คลาวด์ (db capability): projects/{id} = ข้อมูลสรุป, projectData/{id} = แบบเต็ม
+     ทุกคนที่เปิดหน้านี้ได้เห็นรายการเดียวกัน, Contributor ขึ้นไปบันทึกได้
+   - เบราว์เซอร์ (localStorage): ใช้เมื่อคลาวด์ไม่พร้อม/ไม่มีสิทธิ์เขียน
+   ========================================================= */
+const Cloud={db:null,user:null,myId:null,canWrite:null,writeDenied:false,metas:[],fromCache:true,unsub:null};
+let tier='pending';                 // 'pending' | 'cloud' | 'local'
+let cur={id:null,storage:null,rev:null,savedHash:null,savedAt:null,baseHash:null};
+let remoteMeta=null, remoteDeleted=false, saveErr=null, savingNow=false;
+const myRevs=new Set();
+let autoOn=lsGet(AKEY)!=='0';
+
+function content(st){ st=st||S; return {name:st.name,shopW:st.shopW,shopL:st.shopL,grid:st.grid,snap:st.snap,zones:st.zones,items:st.items}; }
+function hashStr(s){ let h=5381; for(let i=0;i<s.length;i++) h=((h<<5)+h+s.charCodeAt(i))|0; return (h>>>0).toString(36)+':'+s.length; }
+const contentHash=()=>hashStr(JSON.stringify(content()));
+function dirty(){ const h=contentHash(); return cur.id?h!==cur.savedHash:h!==cur.baseHash; }
+function persistCur(){ lsSet(CKEY,JSON.stringify(cur)); }
+const cloudWritable=()=>!!Cloud.db&&Cloud.canWrite!==false&&!Cloud.writeDenied;
+const defaultStorage=()=>cloudWritable()?'cloud':'local';
+
+const Local={
+  read(){ try{ const o=JSON.parse(lsGet(PKEY)||'{}'); return o&&typeof o==='object'?o:{}; }catch(e){ return {}; } },
+  write(o){ return lsSet(PKEY,JSON.stringify(o)); }
+};
+function listOf(st){
+  const arr=st==='cloud'?Cloud.metas.slice():Object.entries(Local.read()).map(([id,v])=>Object.assign({id},v&&v.meta||{}));
+  return arr.sort((a,b)=>String(b.updatedAt||'').localeCompare(String(a.updatedAt||'')));
+}
+function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+async function retry1(fn){ try{ return await fn(); }catch(e){ if(e&&e.code==='unavailable'){ await sleep(500+Math.random()*700); return await fn(); } throw e; } }
+
+async function storePut(st,id,meta,state){
+  if(st==='cloud'){
+    await retry1(()=>Cloud.db.doc('projectData/'+id).set({v:1,state}));
+    await retry1(()=>Cloud.db.doc('projects/'+id).set(meta));
+  }else{
+    const o=Local.read(); o[id]={meta,state};
+    if(!Local.write(o)) throw {code:'local_full'};
+  }
+}
+async function storeGet(st,id){
+  if(st==='cloud'){
+    const snap=await retry1(()=>Cloud.db.doc('projectData/'+id).get());
+    if(!snap.exists) return null; const d=snap.data(); return d&&d.state?clone(d.state):null;
+  }
+  const v=Local.read()[id]; return v&&v.state?clone(v.state):null;
+}
+async function storeDel(st,id){
+  if(st==='cloud'){
+    await retry1(()=>Cloud.db.doc('projects/'+id).delete());
+    await retry1(()=>Cloud.db.doc('projectData/'+id).delete());
+  }else{ const o=Local.read(); delete o[id]; Local.write(o); }
+}
+async function storeRename(st,id,name){
+  const rev=uid(); myRevs.add(rev);
+  if(st==='cloud'){
+    await retry1(()=>Cloud.db.doc('projectData/'+id).update({state:{name}}));
+    await retry1(()=>Cloud.db.doc('projects/'+id).update({name,rev}));
+  }else{ const o=Local.read(); if(o[id]){ o[id].meta.name=name; o[id].meta.rev=rev; if(o[id].state) o[id].state.name=name; Local.write(o); } }
+  return rev;
+}
+function makeMeta(st,state,prev,rev){
+  const {c,pockets}=countsOf(state), now=new Date().toISOString();
+  return {v:1,name:state.name||'ไม่มีชื่อ',shopW:state.shopW,shopL:state.shopL,counts:c,pockets,zones:state.zones.length,objects:state.items.length,
+    updatedAt:now,updatedBy:Cloud.myId||null,createdAt:(prev&&prev.createdAt)||now,createdBy:prev?(prev.createdBy??null):(Cloud.myId||null),rev};
+}
+
+function errText(e){
+  const c=e&&e.code;
+  if(c==='invalid_argument') return 'ไม่มีสิทธิ์บันทึกโปรเจคบนคลาวด์ของหน้านี้ (ต้องเป็น Contributor ขึ้นไป)';
+  if(c==='quota_exceeded') return 'พื้นที่จัดเก็บโปรเจคเต็ม ลบโปรเจคที่ไม่ใช้แล้วลองใหม่';
+  if(c==='too_big') return 'โปรเจคนี้ใหญ่เกิน 240 KB บันทึกบนคลาวด์ไม่ได้ ลดจำนวนวัตถุหรือส่งออกเป็นไฟล์แทน';
+  if(c==='local_full') return 'พื้นที่เก็บในเบราว์เซอร์เต็ม ลบโปรเจคเก่าหรือส่งออกเป็นไฟล์';
+  if(c==='resource_exhausted') return 'บันทึกถี่เกินไป รอสักครู่แล้วลองใหม่';
+  return 'บันทึกไม่สำเร็จ ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง';
+}
+function cloudLost(e){
+  const c=e&&e.code;
+  if(['revoked','not_granted','capability_disabled','capability_removed'].includes(c)){
+    Cloud.db=null; tier='local'; if(Cloud.unsub){ try{Cloud.unsub();}catch(_){} Cloud.unsub=null; } return true;
+  }
+  return false;
+}
+
+let saving=null, saveQueued=false;
+async function saveProject(o){
+  o=o||{};
+  if(o.auto&&tier==='pending') return;
+  if(saving){ if(o.asNew){ await saving.catch(()=>{}); } else { saveQueued=true; return; } }
+  let st=(!o.asNew&&cur.id)?cur.storage:defaultStorage();
+  if(st==='cloud'&&!cloudWritable()){
+    if(o.auto){ saveErr={code:'invalid_argument'}; updateStatus(); return; }   // ไม่ย้ายที่เก็บเองตอนบันทึกอัตโนมัติ
+    st='local';
+  }
+  const reuse=!o.asNew&&cur.id&&cur.storage===st;
+  const id=reuse?cur.id:('p'+uid()+uid().slice(0,4));
+  if(o.name!==undefined){ S.name=o.name; lsSet(KEY,JSON.stringify(S)); syncHeader(); }
+  const state=clone(S);
+  if(st==='cloud'&&JSON.stringify(state).length>240000){ saveErr={code:'too_big'}; updateStatus(); toast(errText(saveErr),4000); return; }
+  const prev=reuse?listOf(st).find(m=>m.id===id):null;
+  const rev=uid(), meta=makeMeta(st,state,prev,rev), h=hashStr(JSON.stringify(content(state)));
+  myRevs.add(rev); savingNow=true; saveErr=null; updateStatus();
+  const run=(async()=>{
+    await storePut(st,id,meta,state);
+    const movedFrom=(cur.id&&cur.storage!==st&&!o.asNew)?cur.storage:null;
+    cur={id,storage:st,rev,savedHash:h,savedAt:meta.updatedAt,baseHash:null};
+    remoteMeta=null; remoteDeleted=false; hideBanner(); persistCur();
+    return movedFrom;
+  })();
+  saving=run;
+  try{
+    const movedFrom=await run;
+    if(!o.silent) toast(o.asNew?`บันทึกเป็นโปรเจคใหม่ “${meta.name}” แล้ว`:(movedFrom?'บันทึกลงเบราว์เซอร์นี้แล้ว (คลาวด์ไม่พร้อมหรือไม่มีสิทธิ์)':'บันทึกโปรเจคแล้ว'));
+  }catch(e){
+    saveErr=e||{}; if(st==='cloud'){ if(e&&e.code==='invalid_argument') Cloud.writeDenied=true; if(cloudLost(e)) toast('การเชื่อมต่อที่เก็บคลาวด์หยุดลง — กดบันทึกอีกครั้งเพื่อบันทึกลงเบราว์เซอร์',4500); }
+    if(!o.auto||saveErr.code!=='unavailable') toast(errText(saveErr)+((st==='cloud'&&saveErr.code==='invalid_argument')?' — กดบันทึกอีกครั้งเพื่อบันทึกลงเบราว์เซอร์':''),4500);
+  }finally{
+    saving=null; savingNow=false; updateStatus(); renderProjects();
+    if(saveQueued){ saveQueued=false; if(cur.id&&dirty()) saveProject({silent:true,auto:true}); }
+  }
+}
+
+let autoT=null;
+function scheduleAutosave(){
+  clearTimeout(autoT);
+  if(!autoOn||!cur.id||remoteMeta||remoteDeleted||tier==='pending') return;
+  if(!dirty()) return;
+  autoT=setTimeout(()=>{ if(cur.id&&dirty()&&!remoteMeta) saveProject({silent:true,auto:true}); },3000);
+}
+function onContentChanged(){ if(saveErr&&!savingNow&&!dirty()) saveErr=null; updateStatus(); scheduleAutosave(); }
+
+function updateStatus(){
+  const el=$('#saveState'); if(!el||!S) return;
+  const d=dirty();
+  let cls='', txt='';
+  if(savingNow){ cls='busy'; txt='กำลังบันทึก…'; }
+  else if(saveErr&&d){ cls='bad'; txt='✕ บันทึกไม่สำเร็จ'; }
+  else if(!cur.id){ cls=d?'warn':''; txt=d?'● ยังไม่ได้บันทึกเป็นโปรเจค':'แบบร่าง (ยังไม่บันทึก)'; }
+  else if(d){ cls='warn'; txt='● มีการแก้ไขที่ยังไม่บันทึก'; }
+  else { cls='ok'; txt=`✓ บันทึกแล้ว ${fmtTime(cur.savedAt)}`; }
+  const where=cur.id?(cur.storage==='cloud'?'คลาวด์ (ใช้ร่วมกัน)':'เบราว์เซอร์นี้')
+    :(tier==='pending'?'กำลังเชื่อมต่อที่เก็บ…':(cloudWritable()?'จะบันทึกบนคลาวด์':'จะบันทึกในเบราว์เซอร์นี้'));
+  el.className='state '+cls;
+  el.innerHTML=`<span>${esc(txt)}</span><small>${esc(where)}</small>`;
+  el.title=saveErr&&d?errText(saveErr):'';
+}
+
+/* ---------- banner (บันทึกจากที่อื่น / ถูกลบ) ---------- */
+function showBanner(kind,m){
+  const el=$('#banner');
+  if(kind==='changed'){
+    el.innerHTML=`<span class="t">โปรเจคนี้ถูกบันทึกจากที่อื่นเมื่อ ${esc(fmtTime(m.updatedAt))} <span id="bnWho"></span> ขณะที่คุณมีการแก้ไขที่ยังไม่บันทึก (บันทึกอัตโนมัติหยุดไว้ก่อน)</span>
+      <button class="btn sm" type="button" data-bn="reload">โหลดเวอร์ชันล่าสุด (ทิ้งการแก้ไขของฉัน)</button>
+      <button class="btn sm" type="button" data-bn="overwrite">บันทึกทับด้วยเวอร์ชันของฉัน</button>
+      <button class="btn sm" type="button" data-bn="saveas">บันทึกของฉันเป็นโปรเจคใหม่</button>`;
+    whoInto($('#bnWho'),m.updatedBy,'โดย ');
+  }else{
+    el.innerHTML=`<span class="t">โปรเจคที่เปิดอยู่ถูกลบจากที่อื่นแล้ว แบบบนหน้าจอยังอยู่ครบ</span>
+      <button class="btn sm" type="button" data-bn="keep">บันทึกเก็บไว้เป็นโปรเจคใหม่</button>
+      <button class="btn sm" type="button" data-bn="dismiss">ปิด</button>`;
+  }
+  el.hidden=false;
+}
+function hideBanner(){ const el=$('#banner'); el.hidden=true; el.innerHTML=''; }
+$('#banner').addEventListener('click',async e=>{
+  const b=e.target.closest('[data-bn]'); if(!b) return; const a=b.dataset.bn;
+  if(a==='reload'&&remoteMeta){ await openProject('cloud',remoteMeta.id,{force:true}); }
+  else if(a==='overwrite'&&remoteMeta){ myRevs.add(remoteMeta.rev); remoteMeta=null; hideBanner(); await saveProject({}); }
+  else if(a==='saveas'){ if(remoteMeta) myRevs.add(remoteMeta.rev); remoteMeta=null; hideBanner(); await saveProject({asNew:true,name:(S.name||'โปรเจค')+' (ของฉัน)'}); }
+  else if(a==='keep'){ remoteDeleted=false; hideBanner(); await saveProject({asNew:true}); }
+  else if(a==='dismiss'){ remoteDeleted=false; hideBanner(); }
+});
+
+async function whoInto(el,id,prefix){
+  if(!el||!id||!Cloud.user) return;
+  try{ const ps=await Cloud.user.profiles([id]); const p=ps&&ps[id]; if(p&&p.name){ el.textContent=(prefix||'')+(p.isMe?'คุณ':p.name); } }catch(e){}
+}
+
+/* ---------- cloud init + live list ---------- */
+async function initCloud(){
+  const c=window.claude;
+  if(!c||typeof c.use!=='function'){ tier='local'; afterTier(); return; }
+  let db=null; try{ db=await c.use('db'); }catch(e){ db=null; }
+  if(!db){ tier='local'; afterTier(); return; }
+  Cloud.db=db;
+  try{ Cloud.user=await c.use('user'); }catch(e){ Cloud.user=null; }
+  if(Cloud.user){
+    try{ Cloud.myId=await Cloud.user.id(); }catch(e){}
+    try{ Cloud.canWrite=await Cloud.user.can('data.write'); }catch(e){}
+  }
+  tier='cloud';
+  try{
+    Cloud.unsub=db.collection('projects').onSnapshot(snap=>{
+      Cloud.metas=snap.docs.filter(d=>d.exists).map(d=>Object.assign({id:d.id},d.data()));
+      Cloud.fromCache=!!(snap.metadata&&snap.metadata.fromCache);
+      onCloudList();
+    },err=>{
+      Cloud.db=null; Cloud.unsub=null; tier='local'; updateStatus(); renderProjects();
+      if(!(err&&err.code==='revoked')) toast('เชื่อมต่อรายการโปรเจคบนคลาวด์ไม่ได้ — บันทึกในเบราว์เซอร์แทน',4500);
+    });
+  }catch(e){ Cloud.db=null; tier='local'; }
+  afterTier();
+}
+function afterTier(){
+  if(cur.storage==='cloud'&&tier==='local') { /* เปิดนอก claude.ai: ใช้ working copy ต่อ บันทึกครั้งหน้าจะลงเบราว์เซอร์ */ }
+  updateStatus(); renderProjects(); scheduleAutosave();
+}
+function onCloudList(){
+  if(cur.id&&cur.storage==='cloud'&&!savingNow){
+    const m=Cloud.metas.find(x=>x.id===cur.id);
+    if(!m){
+      if(!Cloud.fromCache&&!remoteDeleted){ remoteDeleted=true; remoteMeta=null; cur={id:null,storage:null,rev:null,savedHash:null,savedAt:null,baseHash:null}; persistCur(); showBanner('deleted'); }
+    }else if(m.rev&&!myRevs.has(m.rev)){
+      if(!dirty()){ openProject('cloud',m.id,{force:true,quiet:true}).then(ok=>{ if(ok) toast('โหลดเวอร์ชันล่าสุดของโปรเจคที่บันทึกจากที่อื่นแล้ว',3500); }); }
+      else if(!remoteMeta||remoteMeta.rev!==m.rev){ remoteMeta=m; clearTimeout(autoT); showBanner('changed',m); }
+    }
+  }
+  updateStatus(); renderProjects();
+}
+
+/* ---------- open / new / import ---------- */
+let opening=false;
+async function openProject(st,id,o){
+  o=o||{};
+  if(opening) return false; opening=true;
+  try{
+    if(st==='cloud'&&!Cloud.db){ toast('ที่เก็บคลาวด์ไม่พร้อมในขณะนี้'); return false; }
+    const state=await storeGet(st,id);
+    if(!state||!valid(state)){ toast('เปิดโปรเจคไม่ได้: ไม่พบข้อมูลแบบของโปรเจคนี้',3500); return false; }
+    const m=listOf(st).find(x=>x.id===id);
+    loadState(normalize(state));
+    cur={id,storage:st,rev:(m&&m.rev)||null,savedHash:contentHash(),savedAt:(m&&m.updatedAt)||null,baseHash:null};
+    if(cur.rev) myRevs.add(cur.rev);
+    remoteMeta=null; remoteDeleted=false; saveErr=null; hideBanner(); persistCur(); updateStatus(); renderProjects();
+    if(!o.quiet) toast(`เปิดโปรเจค “${S.name}” แล้ว`);
+    return true;
+  }catch(e){
+    if(st==='cloud') cloudLost(e);
+    toast('เปิดโปรเจคไม่สำเร็จ ลองอีกครั้ง',3500); return false;
+  }finally{ opening=false; }
+}
+function loadState(st){
+  S=st; sel=null; measure=null; hist=[]; redoStack=[];
+  lsSet(KEY,JSON.stringify(S)); syncHeader(); renderAll(); fit();
+}
+function startDraft(st,msg){
+  loadState(st);
+  cur={id:null,storage:null,rev:null,savedHash:null,savedAt:null,baseHash:contentHash()};
+  remoteMeta=null; remoteDeleted=false; saveErr=null; hideBanner(); persistCur(); updateStatus(); renderProjects();
+  if(msg) toast(msg);
+}
+
+/* =========================================================
+   14) Project manager (modal)
+   ========================================================= */
+let pmState={renaming:null,delArm:null,confirm:null,saveAs:false,busy:null};
+function openProjects(){
+  pmState={renaming:null,delArm:null,confirm:null,saveAs:false,busy:null};
+  openModal('โปรเจคทั้งหมด',
+    `<div id="pmConfirm"></div>
+     <div class="pm-actions">
+       <button class="btn primary" type="button" data-pm="save">บันทึก</button>
+       <button class="btn" type="button" data-pm="saveas">บันทึกเป็นโปรเจคใหม่…</button>
+       <button class="btn" type="button" data-pm="newblank">+ โปรเจคใหม่ (แบบเปล่า)</button>
+       <button class="btn" type="button" data-pm="newsample">+ โปรเจคใหม่จากตัวอย่าง</button>
+     </div>
+     <div id="pmSaveAs"></div>
+     <div class="pm-actions">
+       <button class="btn sm" type="button" data-pm="dlfile">ดาวน์โหลดไฟล์โปรเจค (.json)</button>
+       <button class="btn sm" type="button" data-pm="openfile">เปิดไฟล์โปรเจค (.json)</button>
+       <button class="btn sm" type="button" data-pm="json">คัดลอก / วาง JSON</button>
+     </div>
+     <p class="pm-tier" id="pmTier"></p>
+     <input id="pmSearch" type="search" placeholder="ค้นหาชื่อโปรเจค" aria-label="ค้นหาชื่อโปรเจค">
+     <div id="pmList"></div>`,
+    `<button class="btn" type="button" data-pm="close">ปิด</button>`,'projects');
+  renderProjects();
+}
+function renderTierNote(){
+  const el=$('#pmTier'); if(!el) return;
+  if(tier==='pending') el.innerHTML='กำลังเชื่อมต่อที่เก็บโปรเจค…';
+  else if(tier==='cloud') el.innerHTML=cloudWritable()
+    ?'ที่เก็บ: <b>คลาวด์ของหน้านี้</b> — ทุกคนที่เปิดหน้านี้ได้เห็นรายการเดียวกัน ผู้ที่มีสิทธิ์ Contributor ขึ้นไปบันทึก/ลบได้'
+    :'ที่เก็บ: <b>คลาวด์ของหน้านี้ (ดูอย่างเดียว)</b> — คุณเปิดโปรเจคได้ แต่การบันทึกจะเก็บใน<b>เบราว์เซอร์นี้</b>';
+  else el.innerHTML='ที่เก็บ: <b>เบราว์เซอร์นี้เท่านั้น</b> — เปิดหน้านี้ผ่าน claude.ai เพื่อบันทึกบนคลาวด์ หรือดาวน์โหลดไฟล์ .json เก็บไว้';
+}
+function projRow(m,st){
+  const isCur=cur.id===m.id&&cur.storage===st;
+  const c=m.counts||{};
+  const ren=pmState.renaming&&pmState.renaming.id===m.id&&pmState.renaming.st===st;
+  const armed=pmState.delArm&&pmState.delArm.id===m.id&&pmState.delArm.st===st;
+  const busy=pmState.busy===st+':'+m.id;
+  const name=ren?`<div class="pm-row"><input type="text" id="pmRename" value="${esc(m.name||'')}" aria-label="ชื่อใหม่"><button class="btn sm primary" type="button" data-pa="renameok">ตกลง</button><button class="btn sm" type="button" data-pa="renamecancel">ยกเลิก</button></div>`
+    :`<div class="pname">${esc(m.name||'ไม่มีชื่อ')}${isCur?'<span class="tag">เปิดอยู่</span>':''}</div>`;
+  const meta=`${m.shopW?dimsShort(m.shopW,m.shopL)+' cm':''} · ซัก ${c.washer||0} · อบ ${c.dryer||0}${c.stack?` · Stack ${c.stack}`:''} · ถัง ${m.pockets||0} · CCTV ${c.cctv||0}`;
+  const who=`บันทึก ${esc(fmtTime(m.updatedAt))} <span data-uid="${esc(m.updatedBy||'')}"></span>`;
+  const acts=ren?'':`<button class="btn sm" type="button" data-pa="open" ${busy?'disabled':''}>${isCur?'เปิดใหม่':'เปิด'}</button>
+    <button class="btn sm" type="button" data-pa="rename">เปลี่ยนชื่อ</button>
+    <button class="btn sm" type="button" data-pa="dup">ทำสำเนา</button>
+    ${st==='local'&&cloudWritable()?'<button class="btn sm" type="button" data-pa="upload">ย้ายขึ้นคลาวด์</button>':''}
+    <button class="btn sm danger ${armed?'armed':''}" type="button" data-pa="del">${armed?'ยืนยันลบ':'ลบ'}</button>`;
+  return `<li class="${isCur?'cur':''}" data-pid="${esc(m.id)}" data-st="${st}">${name}<div class="pacts">${acts}</div><div class="pmeta">${meta}</div><div class="pwho">${who}</div></li>`;
+}
+function renderProjects(){
+  renderTierNote();
+  const el=$('#pmList'); if(!el) return;
+  const qEl=$('#pmSearch'), q=(qEl?qEl.value:'').trim().toLowerCase();
+  const filt=a=>q?a.filter(m=>String(m.name||'').toLowerCase().includes(q)):a;
+  const secs=[];
+  if(tier==='cloud'&&Cloud.db) secs.push({st:'cloud',title:'โปรเจคบนคลาวด์',items:filt(listOf('cloud'))});
+  const loc=listOf('local');
+  if(tier!=='cloud'||loc.length) secs.push({st:'local',title:tier==='cloud'?'โปรเจคในเบราว์เซอร์นี้':'โปรเจคที่บันทึกไว้',items:filt(loc)});
+  let h='';
+  secs.forEach(sc=>{
+    h+=`<div class="eyebrow" style="margin:6px 0">${sc.title} (${sc.items.length})</div>`;
+    if(!sc.items.length) h+=`<div class="pempty">${q?'ไม่พบโปรเจคที่ตรงกับคำค้น':(sc.st==='cloud'&&Cloud.fromCache?'กำลังโหลดรายการ…':'ยังไม่มีโปรเจค — กด “บันทึก” เพื่อเก็บแบบปัจจุบันเป็นโปรเจคแรก')}</div>`;
+    else h+=`<ul class="plist">${sc.items.map(m=>projRow(m,sc.st)).join('')}</ul>`;
+  });
+  el.innerHTML=h;
+  if(Cloud.user){
+    const spans=[...el.querySelectorAll('[data-uid]')].filter(s=>s.dataset.uid);
+    const ids=[...new Set(spans.map(s=>s.dataset.uid))];
+    if(ids.length) Cloud.user.profiles(ids).then(ps=>{ spans.forEach(s=>{ const p=ps&&ps[s.dataset.uid]; if(p&&p.name) s.textContent='โดย '+(p.isMe?'คุณ':p.name); }); }).catch(()=>{});
+  }
+  const rn=$('#pmRename'); if(rn&&document.activeElement!==rn){ rn.focus(); rn.select(); }
+}
+function renderConfirm(){
+  const el=$('#pmConfirm'); if(!el) return;
+  const c=pmState.confirm;
+  if(!c){ el.innerHTML=''; return; }
+  el.innerHTML=`<div class="pm-box warnbox"><div>${cur.id?'แบบที่เปิดอยู่มีการแก้ไขที่ยังไม่บันทึก':'แบบปัจจุบันยังไม่ได้บันทึกเป็นโปรเจค'} — ${esc(c.label)}แล้วการแก้ไขนี้จะหายไป</div>
+    <div class="pm-row"><button class="btn sm primary" type="button" data-cf="save">บันทึกก่อน แล้ว${esc(c.label)}</button><button class="btn sm danger" type="button" data-cf="discard">ไม่บันทึก ${esc(c.label)}เลย</button><button class="btn sm" type="button" data-cf="cancel">ยกเลิก</button></div></div>`;
+}
+function guardDirty(label,next){
+  if(!dirty()) return next();
+  pmState.confirm={label,next}; renderConfirm();
+  const el=$('#pmConfirm'); if(el) el.scrollIntoView({block:'nearest'});
+}
+function renderSaveAs(){
+  const el=$('#pmSaveAs'); if(!el) return;
+  if(!pmState.saveAs){ el.innerHTML=''; return; }
+  el.innerHTML=`<div class="pm-box"><div class="pm-row"><input type="text" id="pmNewName" value="${esc((S.name||'โปรเจค')+(cur.id?' (สำเนา)':''))}" aria-label="ชื่อโปรเจคใหม่"><button class="btn sm primary" type="button" data-pm="saveasok">บันทึกเป็นโปรเจคใหม่</button><button class="btn sm" type="button" data-pm="saveascancel">ยกเลิก</button></div></div>`;
+  const i=$('#pmNewName'); i.focus(); i.select();
+}
+
+$('#modal').addEventListener('input',e=>{ if(e.target.id==='pmSearch') renderProjects(); });
+$('#modal').addEventListener('keydown',e=>{
+  if(e.key!=='Enter') return;
+  if(e.target.id==='pmRename'){ e.preventDefault(); const b=$('[data-pa="renameok"]'); if(b) b.click(); }
+  if(e.target.id==='pmNewName'){ e.preventDefault(); const b=$('[data-pm="saveasok"]'); if(b) b.click(); }
+});
+$('#modal').addEventListener('click',async e=>{
+  if(modalKind!=='projects') return;
+  const cf=e.target.closest('[data-cf]');
+  if(cf){
+    const c=pmState.confirm; pmState.confirm=null; renderConfirm(); if(!c) return;
+    if(cf.dataset.cf==='save'){ await saveProject({}); if(!dirty()) c.next(); else toast('ยังบันทึกไม่สำเร็จ จึงยังไม่ดำเนินการต่อ',3500); }
+    else if(cf.dataset.cf==='discard') c.next();
+    return;
+  }
+  const pm=e.target.closest('[data-pm]');
+  if(pm){
+    const a=pm.dataset.pm;
+    if(a==='close') return closeModal();
+    if(a==='save'){ await saveProject({}); renderProjects(); return; }
+    if(a==='saveas'){ pmState.saveAs=true; renderSaveAs(); return; }
+    if(a==='saveascancel'){ pmState.saveAs=false; renderSaveAs(); return; }
+    if(a==='saveasok'){ const n=($('#pmNewName').value||'').trim()||'โปรเจคใหม่'; pmState.saveAs=false; renderSaveAs(); await saveProject({asNew:true,name:n}); renderProjects(); return; }
+    if(a==='newblank') return guardDirty('สร้างโปรเจคใหม่',()=>{ startDraft(blank(S.shopW,S.shopL,'โปรเจคใหม่'),'เริ่มโปรเจคใหม่ (ขนาดร้านเท่าเดิม) — กดบันทึกเพื่อเก็บ'); closeModal(); });
+    if(a==='newsample') return guardDirty('เปิดแบบตัวอย่าง',()=>{ startDraft(sample(),'เปิดแบบตัวอย่างแล้ว'); closeModal(); });
+    if(a==='dlfile') return downloadProjectFile();
+    if(a==='openfile') return guardDirty('เปิดไฟล์',()=>{ const f=$('#fileIn'); f.value=''; f.click(); });
+    if(a==='json') return openJson();
+    return;
+  }
+  const pa=e.target.closest('[data-pa]'); if(!pa) return;
+  const li=pa.closest('[data-pid]'); if(!li) return;
+  const id=li.dataset.pid, st=li.dataset.st, act=pa.dataset.pa;
+  const m=listOf(st).find(x=>x.id===id); if(!m) return;
+  if(act!=='del'&&pmState.delArm){ pmState.delArm=null; }
+  if(act==='open'){
+    const isCur=cur.id===id&&cur.storage===st;
+    return guardDirty(isCur?'เปิดเวอร์ชันที่บันทึกไว้':'เปิดโปรเจคอื่น',async()=>{ pmState.busy=st+':'+id; renderProjects(); const ok=await openProject(st,id); pmState.busy=null; if(ok) closeModal(); else renderProjects(); });
+  }
+  if(act==='rename'){ pmState.renaming={id,st}; return renderProjects(); }
+  if(act==='renamecancel'){ pmState.renaming=null; return renderProjects(); }
+  if(act==='renameok'){
+    const n=($('#pmRename').value||'').trim(); pmState.renaming=null;
+    if(!n||n===m.name){ return renderProjects(); }
+    try{
+      if(st==='cloud'&&!cloudWritable()) throw {code:'invalid_argument'};
+      const rev=await storeRename(st,id,n);
+      if(cur.id===id&&cur.storage===st){ const wasDirty=dirty(); S.name=n; lsSet(KEY,JSON.stringify(S)); syncHeader(); cur.rev=rev; if(!wasDirty) cur.savedHash=contentHash(); persistCur(); }
+      toast('เปลี่ยนชื่อโปรเจคแล้ว');
+    }catch(err){ toast(errText(err),4000); }
+    updateStatus(); return renderProjects();
+  }
+  if(act==='dup'||act==='upload'){
+    const target=act==='upload'?'cloud':(st==='cloud'&&cloudWritable()?'cloud':'local');
+    pmState.busy=st+':'+id; renderProjects();
+    try{
+      const state=await storeGet(st,id); if(!state) throw {code:'missing'};
+      if(act==='dup') state.name=(state.name||'โปรเจค')+' (สำเนา)';
+      const nid=act==='upload'?id:('p'+uid()+uid().slice(0,4));
+      const rev=uid(); myRevs.add(rev);
+      await storePut(target,nid,makeMeta(target,state,act==='upload'?m:null,rev),state);
+      if(act==='upload'){
+        await storeDel('local',id);
+        if(cur.id===id&&cur.storage==='local'){ cur.storage='cloud'; cur.rev=rev; persistCur(); }
+        toast('ย้ายโปรเจคขึ้นคลาวด์แล้ว');
+      }else toast(`ทำสำเนาเป็น “${state.name}” แล้ว`);
+    }catch(err){ toast(err&&err.code==='missing'?'ไม่พบข้อมูลแบบของโปรเจคนี้':errText(err),4000); }
+    pmState.busy=null; updateStatus(); return renderProjects();
+  }
+  if(act==='del'){
+    if(!(pmState.delArm&&pmState.delArm.id===id&&pmState.delArm.st===st)){
+      pmState.delArm={id,st}; renderProjects();
+      setTimeout(()=>{ if(pmState.delArm&&pmState.delArm.id===id){ pmState.delArm=null; renderProjects(); } },4000);
+      return;
+    }
+    pmState.delArm=null;
+    try{
+      if(st==='cloud'&&!cloudWritable()) throw {code:'invalid_argument'};
+      if(cur.id===id&&cur.storage===st){ cur={id:null,storage:null,rev:null,savedHash:null,savedAt:null,baseHash:null}; persistCur(); }
+      await storeDel(st,id);
+      toast(`ลบโปรเจค “${m.name||''}” แล้ว`);
+    }catch(err){ toast(errText(err),4000); }
+    updateStatus(); return renderProjects();
+  }
+});
+
+/* ---------- files (downloads capability → fallback คัดลอก JSON) ---------- */
+let dlP=null;
+function getDownloads(){
+  if(!dlP){ const c=window.claude; dlP=(c&&typeof c.use==='function')?c.use('downloads').catch(()=>null):Promise.resolve(null); }
+  return dlP;
+}
+function safeFile(n){ return (String(n||'').replace(/[\\/:*?"<>|\u0000-\u001f]+/g,'-').trim().slice(0,80))||'laundry-layout'; }
+function exportObj(){ return {app:'washdry-layout',v:1,exportedAt:new Date().toISOString(),state:S}; }
+async function downloadProjectFile(){
+  const dl=await getDownloads();
+  if(!dl){ openJson(); return; }
+  try{ await dl.save({filename:safeFile(S.name)+'.json',data:JSON.stringify(exportObj(),null,1)}); toast('บันทึกไฟล์โปรเจคแล้ว'); }
+  catch(e){ const c=e&&e.code; if(c==='declined') return; if(c==='rate_limited'){ toast('มีหน้าต่างบันทึกไฟล์เปิดอยู่แล้ว'); return; } openJson(); }
+}
+function parseProjectText(txt){
+  const o=JSON.parse(txt); const st=o&&o.state&&o.app==='washdry-layout'?o.state:o;
+  if(!valid(st)) throw new Error('shape');
+  return normalize(st);
+}
+$('#fileIn').addEventListener('change',e=>{
+  const f=e.target.files&&e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{ const st=parseProjectText(String(rd.result)); startDraft(st,`เปิดไฟล์ “${f.name}” แล้ว — กดบันทึกเพื่อเก็บเป็นโปรเจค`); closeModal(); }
+    catch(err){ toast('อ่านไฟล์ไม่ได้ ต้องเป็นไฟล์ .json ที่ส่งออกจากโปรแกรมนี้',4000); }
+  };
+  rd.onerror=()=>toast('อ่านไฟล์ไม่สำเร็จ');
+  rd.readAsText(f);
+});
 
 function openJson(){
-  openModal('บันทึก / โหลดแบบ (JSON)',
-    `<p class="note">แบบนี้บันทึกอัตโนมัติในเบราว์เซอร์เครื่องนี้ หากต้องการเก็บไว้หรือย้ายไปเครื่องอื่น ให้คัดลอก JSON ด้านล่างไปเก็บ (เช่น Google Drive / LINE Keep) แล้ววางกลับเพื่อโหลดภายหลัง</p>
-     <textarea id="jsonTxt" spellcheck="false">${esc(JSON.stringify(S,null,1))}</textarea><p class="note" id="jsonMsg"></p>`,
-    `<button class="btn" type="button" id="jCopy">คัดลอก JSON</button><button class="btn" type="button" id="jLoad">โหลดจาก JSON ที่วาง</button><button class="btn" type="button" id="jClose">ปิด</button>`);
+  openModal('คัดลอก / วาง JSON ของแบบ',
+    `<p class="note">คัดลอก JSON ด้านล่างไปเก็บ (เช่น Google Drive / LINE Keep) หรือวาง JSON ที่เคยคัดลอกไว้แล้วกด “เปิดจาก JSON ที่วาง” — แบบที่เปิดจะเป็นแบบร่าง กดบันทึกเพื่อเก็บเป็นโปรเจค</p>
+     <textarea id="jsonTxt" spellcheck="false">${esc(JSON.stringify(exportObj(),null,1))}</textarea><p class="note" id="jsonMsg"></p>`,
+    `<button class="btn" type="button" id="jCopy">คัดลอก JSON</button><button class="btn" type="button" id="jLoad">เปิดจาก JSON ที่วาง</button><button class="btn" type="button" id="jClose">ปิด</button>`,'json');
   $('#jClose').onclick=closeModal;
   $('#jCopy').onclick=()=>{ const ta=$('#jsonTxt'); const ok=()=>toast('คัดลอก JSON แล้ว');
-    try{ navigator.clipboard.writeText(ta.value).then(ok,()=>{ta.select();$('#jsonMsg').textContent='เบราว์เซอร์ไม่อนุญาตให้คัดลอกอัตโนมัติ ข้อความถูกเลือกไว้แล้ว กด Ctrl+C / ⌘C';}); }catch(err){ ta.select(); } };
+    const fallback=()=>{ ta.select(); $('#jsonMsg').textContent='เบราว์เซอร์ไม่อนุญาตให้คัดลอกอัตโนมัติ ข้อความถูกเลือกไว้แล้ว กด Ctrl+C / ⌘C'; };
+    try{ navigator.clipboard.writeText(ta.value).then(ok,fallback); }catch(err){ fallback(); } };
   $('#jLoad').onclick=()=>{
-    try{ const o=JSON.parse($('#jsonTxt').value); if(!valid(o)) throw new Error('shape');
-      pushHist(); S=normalize(o); sel=null; syncHeader(); commit(); fit(); closeModal(); toast('โหลดแบบแล้ว');
+    try{ const st=parseProjectText($('#jsonTxt').value);
+      if(dirty()&&!$('#jLoad').dataset.armed){ $('#jLoad').dataset.armed='1'; $('#jLoad').textContent='ยืนยัน: แทนที่แบบปัจจุบันที่ยังไม่บันทึก'; $('#jLoad').classList.add('danger','armed'); return; }
+      startDraft(st,'เปิดแบบจาก JSON แล้ว — กดบันทึกเพื่อเก็บเป็นโปรเจค'); closeModal();
     }catch(err){ $('#jsonMsg').textContent='อ่าน JSON ไม่ได้ ตรวจสอบว่าวางข้อความครบทั้งหมด (ต้องมี shopW, shopL, zones, items)'; }
   };
 }
 
+/* =========================================================
+   15) PNG export
+   ========================================================= */
 function resolveVars(str){
   const cs=getComputedStyle(document.documentElement);
   return str.replace(/var\((--[a-z0-9-]+)\)/gi,(m,n)=>(cs.getPropertyValue(n).trim()||'#000').replace(/"/g,"'"));
 }
 function exportPNG(){
-  const W=S.shopW,L=S.shopL, padL=70,padT=56,padR=130,padB=90, foot=96, target=1500;
+  const W=S.shopW,L=S.shopL, padL=76,padT=56,padR=140,padB=90, foot=96, target=1500;
   const s=Math.min(target/W,target/L), cw=Math.round(W*s+padL+padR), ch=Math.round(L*s+padT+padB+foot);
-  const by={}; KORDER.forEach(k=>by[k]=S.items.filter(i=>i.kind===k).length);
-  const pockets=S.items.filter(i=>['washer','dryer','stack'].includes(i.kind)).reduce((a,i)=>a+(+i.units||1),0);
+  const {c:by,pockets}=countsOf(S);
   const d=new Date(), ds=`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()+543}`;
-  const line1=`${S.name||'แบบผังร้าน'} · ขนาด ${(W/1000).toFixed(2)} × ${(L/1000).toFixed(2)} m (${m2(W*L).toFixed(2)} m²) · ${ds}`;
-  const line2=`ซัก ${by.washer} · อบ ${by.dryer} · Stack ${by.stack} · ถังบริการ ${pockets} · ชำระเงิน ${by.coin} · อื่นๆ ${by.furn} · CCTV ${by.cctv} จุด · หน่วยระยะ mm`;
+  const line1=`${S.name||'แบบผังร้าน'} · ขนาด ${dimsShort(W,L)} cm (${fmtArea(W*L)}) · ${ds}`;
+  const line2=`ซัก ${by.washer} · อบ ${by.dryer} · Stack ${by.stack} · ถังบริการ ${pockets} · ชำระเงิน ${by.coin} · อื่นๆ ${by.furn} · CCTV ${by.cctv} จุด · หน่วยระยะ cm (ต่ำกว่า 1 cm แสดงเป็น mm)`;
   const y0=L*s+padT+padB;
   let body=buildPlan({s,tx:padL,ty:padT},{exporting:true});
   body+=`<line x1="24" y1="${y0}" x2="${cw-24}" y2="${y0}" style="stroke:var(--line)" stroke-width="1"/>`;
@@ -1109,73 +1670,90 @@ function exportPNG(){
     const ctx=c.getContext('2d'); ctx.scale(k,k); ctx.drawImage(img,0,0);
     let url=''; try{ url=c.toDataURL('image/png'); }catch(err){}
     openModal('ภาพแบบผัง (PNG)',
-      `<p class="note">คลิกขวาที่ภาพแล้วเลือก “บันทึกรูปภาพ” (มือถือ: กดค้างที่ภาพ) หรือกดปุ่มคัดลอกเพื่อวางลง LINE / เอกสาร</p><img id="pngImg" alt="แบบผังร้าน" src="${url||('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(str))}"><p class="note" id="pngMsg"></p>`,
-      `<button class="btn" type="button" id="pCopy">คัดลอกภาพ</button><button class="btn" type="button" id="pClose">ปิด</button>`);
+      `<p class="note">กด “บันทึกไฟล์ PNG” หรือคลิกขวาที่ภาพแล้วเลือก “บันทึกรูปภาพ” (มือถือ: กดค้างที่ภาพ) · กดคัดลอกเพื่อวางลง LINE / เอกสาร</p><img id="pngImg" alt="แบบผังร้าน" src="${url||('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(str))}"><p class="note" id="pngMsg"></p>`,
+      `<button class="btn" type="button" id="pSave" hidden>บันทึกไฟล์ PNG</button><button class="btn" type="button" id="pCopy">คัดลอกภาพ</button><button class="btn" type="button" id="pClose">ปิด</button>`,'png');
     $('#pClose').onclick=closeModal;
+    getDownloads().then(dl=>{
+      const b=$('#pSave'); if(!dl||!b||!url) return; b.hidden=false;
+      b.onclick=()=>{ c.toBlob(async blob=>{ if(!blob) return; try{ await dl.save({filename:safeFile(S.name)+'.png',data:blob}); toast('บันทึกไฟล์ PNG แล้ว'); }catch(e2){ if(e2&&e2.code!=='declined') $('#pngMsg').textContent='บันทึกไฟล์ไม่ได้ ใช้คลิกขวา/กดค้างที่ภาพแทน'; } },'image/png'); };
+    });
     $('#pCopy').onclick=()=>{
-      try{ c.toBlob(b=>{ navigator.clipboard.write([new ClipboardItem({'image/png':b})]).then(()=>toast('คัดลอกภาพแล้ว'),()=>{$('#pngMsg').textContent='เบราว์เซอร์นี้ไม่อนุญาตคัดลอกภาพ ใช้คลิกขวา/กดค้างที่ภาพแทน';}); },'image/png'); }
-      catch(err){ $('#pngMsg').textContent='เบราว์เซอร์นี้ไม่อนุญาตคัดลอกภาพ ใช้คลิกขวา/กดค้างที่ภาพแทน'; }
+      const fail=()=>{ $('#pngMsg').textContent='เบราว์เซอร์นี้ไม่อนุญาตคัดลอกภาพ ใช้คลิกขวา/กดค้างที่ภาพแทน'; };
+      try{ c.toBlob(b=>{ try{ navigator.clipboard.write([new ClipboardItem({'image/png':b})]).then(()=>toast('คัดลอกภาพแล้ว'),fail); }catch(e3){ fail(); } },'image/png'); }
+      catch(err){ fail(); }
     };
   };
   img.onerror=()=>toast('สร้างภาพไม่สำเร็จ');
   img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(str);
 }
 
-function openReset(){
-  openModal('เริ่มแบบใหม่',
-    `<p>เลือกวิธีเริ่มต้น แบบปัจจุบันยังย้อนกลับได้ด้วยปุ่ม ↶ ย้อน</p>`,
-    `<button class="btn" type="button" id="rCancel">ยกเลิก</button><button class="btn" type="button" id="rSample">โหลดแบบตัวอย่าง</button><button class="btn danger" type="button" id="rBlank">ล้างเป็นแบบเปล่า</button>`);
-  $('#rCancel').onclick=closeModal;
-  $('#rSample').onclick=()=>{ pushHist(); S=sample(); sel=null; syncHeader(); commit(); fit(); closeModal(); };
-  $('#rBlank').onclick=()=>{ pushHist(); const w=S.shopW,l=S.shopL; S=sample(); S.name='แบบใหม่'; S.shopW=w; S.shopL=l; S.zones=[]; S.items=[]; sel=null; syncHeader(); commit(); fit(); closeModal(); };
-}
-
 /* =========================================================
-   13) Wiring
+   16) Wiring
    ========================================================= */
+function commitName(){
+  const v=$('#planName').value;
+  if(v!==S.name) mutate(()=>{ S.name=v; });
+}
 function wire(){
   $('#libList').addEventListener('click',e=>{
     const p=e.target.closest('[data-p]'); if(p){ addFromPreset(PRE[p.dataset.p]); return; }
     if(e.target.id==='cAdd'){
-      const kind=$('#cKind').value, w=Math.max(10,+$('#cW').value||0), d=Math.max(10,+$('#cD').value||0);
+      const kind=$('#cKind').value;
+      const cm=id=>{ const v=parseFloat($(id).value); return isFinite(v)?v:0; };
+      const w=Math.max(10,mmFromCm(cm('#cW'))), d=Math.max(10,mmFromCm(cm('#cD')));
       addFromPreset({kind,brand:$('#cBrand').value.trim(),model:$('#cModel').value.trim()||'กำหนดเอง',name:$('#cModel').value.trim()||KIND[kind].label,
-        w,d,h:Math.max(0,+$('#cH').value||0),units:Math.max(1,+$('#cU').value||1),clear:Math.max(0,+$('#cC').value||0),src:'approx',cap:''});
+        w,d,h:Math.max(0,mmFromCm(cm('#cH'))),units:Math.max(1,parseInt($('#cU').value)||1),clear:Math.max(0,mmFromCm(cm('#cC'))),src:'approx',cap:''});
     }
     if(e.target.id==='zAdd'){
-      const w=Math.max(100,r1((+$('#zW').value||1)*1000)), l=Math.max(100,r1((+$('#zL').value||1)*1000));
+      const cm=id=>{ const v=parseFloat($(id).value); return isFinite(v)?v:100; };
+      const w=Math.max(100,mmFromCm(cm('#zW'))), l=Math.max(100,mmFromCm(cm('#zL')));
       mutate(()=>{ const z={id:uid(),name:$('#zName').value.trim()||'โซน',x:0,y:0,w,l,color:ZCOL[S.zones.length%ZCOL.length],locked:false}; S.zones.push(z); sel=z.id; });
     }
   });
+  const gapHint=()=>{ $('#aGapHint').textContent=unitHint(gapMM()); };
+  $('#aGap').addEventListener('input',gapHint); gapHint();
+
   const ins=$('#inspector');
   ins.addEventListener('input',onField);
   ins.addEventListener('focusin',()=>{ insSnap=snapStr(); });
   ins.addEventListener('change',()=>{ if(insSnap&&insSnap!==snapStr()){ pushHist(insSnap); insSnap=snapStr(); updUndo(); } });
   ins.addEventListener('click',onInspAct);
-  $('#summary').addEventListener('click',e=>{ const t=e.target.closest('[data-sel]'); if(t){ sel=t.dataset.sel; renderAll(); } });
+  $('#summary').addEventListener('click',e=>{ const t=e.target.closest('[data-sel]'); if(t&&findAny(t.dataset.sel)){ sel=t.dataset.sel; renderAll(); } });
 
-  $('#planName').addEventListener('change',e=>mutate(()=>{ S.name=e.target.value; }));
+  $('#planName').addEventListener('change',commitName);
+  $('#planName').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); commitName(); e.target.blur(); } });
   const shopChange=()=>{ const w=parseFloat($('#shopW').value), l=parseFloat($('#shopL').value);
-    if(!(w>=1&&w<=100&&l>=1&&l<=100)){ toast('ขนาดร้านต้องอยู่ระหว่าง 1–100 m'); syncHeader(); return; }
-    mutate(()=>{ S.shopW=r1(w*1000); S.shopL=r1(l*1000); }); syncHeader(); fit(); };
+    if(!(w>=100&&w<=10000&&l>=100&&l<=10000)){ toast('ขนาดร้านต้องอยู่ระหว่าง 100–10,000 cm'); syncHeader(); return; }
+    mutate(()=>{ S.shopW=mmFromCm(w); S.shopL=mmFromCm(l); }); syncHeader(); fit(); };
   $('#shopW').addEventListener('change',shopChange); $('#shopL').addEventListener('change',shopChange);
   $('#gridSel').addEventListener('change',e=>mutate(()=>{ S.grid=+e.target.value; }));
   $('#snapSel').addEventListener('change',e=>mutate(()=>{ S.snap=+e.target.value; }));
   [['oClear','showClear'],['oFov','showFov'],['oAll','showAll'],['oMag','magnet'],['oLbl','showLbl']].forEach(([id,k])=>{
     $('#'+id).addEventListener('change',e=>{ S[k]=e.target.checked; save(); renderPlan(); });
   });
+  $('#oAuto').checked=autoOn;
+  $('#oAuto').addEventListener('change',e=>{ autoOn=e.target.checked; lsSet(AKEY,autoOn?'1':'0'); if(autoOn) scheduleAutosave(); else clearTimeout(autoT); });
+  $('#bSave').onclick=()=>{ if(document.activeElement===$('#planName')) commitName(); saveProject({}); };
+  $('#bProjects').onclick=openProjects;
   $('#tSelect').onclick=()=>setMode('select');
   $('#tMeasure').onclick=()=>setMode(mode==='measure'?'select':'measure');
   $('#tUndo').onclick=undo; $('#tRedo').onclick=redo;
   $('#tFit').onclick=fit;
   $('#tZi').onclick=()=>zoomAt(svg.clientWidth/2,svg.clientHeight/2,1.25);
   $('#tZo').onclick=()=>zoomAt(svg.clientWidth/2,svg.clientHeight/2,1/1.25);
-  $('#bJson').onclick=openJson; $('#bPng').onclick=exportPNG; $('#bReset').onclick=openReset;
+  $('#bPng').onclick=exportPNG;
   let first=true;
   new ResizeObserver(()=>{ if(first){ first=false; fit(); } else renderPlan(); }).observe($('#svgWrap'));
 }
 
-S=load();
-renderLibrary(); syncHeader(); wire(); renderAll();
+/* ---------- boot ---------- */
+const boot=load();
+S=boot.state;
+try{ const c=JSON.parse(lsGet(CKEY)||'null'); if(c&&typeof c==='object'&&'id' in c) cur=Object.assign(cur,c); }catch(e){}
+if(!lsGet(CKEY)&&boot.fresh) cur.baseHash=contentHash();   // แบบตัวอย่างครั้งแรก = แบบร่างที่ยังไม่ถูกแก้
+if(cur.rev) myRevs.add(cur.rev);
+renderLibrary(); syncHeader(); wire(); renderAll(); updateStatus();
 requestAnimationFrame(fit);
+initCloud();
 })();
 </script>
